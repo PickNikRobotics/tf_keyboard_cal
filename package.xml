@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package>
+  <name>tf_keyboard_cal</name>
+  <version>0.0.1</version>
+  <description>Allows manual control of a TF through the keyboard</description>
+
+  <maintainer email="davetcoleman@gmail.com">Dave Coleman</maintainer>
+  <maintainer email="mcevoy.andy@gmail.com">Andy McEvoy</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">https://github.com/davetcoleman/tf_keyboard_cal</url>
+  <url type="butracker">https://github.com/davetcoleman/tf_keyboard_cal/issues</url>
+  <url type="repository">https://github.com/davetcoleman/tf_keyboard_cal/</url>
+
+  <author email="davetcoleman@gmail.com">Dave Coleman</author>
+  <author email="mcevoy.andy@gmail.com">Andy McEvoy</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>keyboard</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>tf2</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>roslib</build_depend>
+  <build_depend>ros_param_shortcuts</build_depend>
+  
+  <run_depend>keyboard</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>tf2</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>ros_param_shortcuts</run_depend>
+
+  <export>
+  </export>
+</package>

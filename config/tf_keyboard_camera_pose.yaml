@@ -1,0 +1,10 @@
+initial_x: -0.1085
+initial_y: -0.273
+initial_z: 0.75
+initial_roll: -0.0108
+initial_pitch: 0.25
+initial_yaw: 0.17
+from: gantry_plate
+to: camera_link
+file_name: dave_test_tf_keyboard
+topic_name: /keyboard_camera_pose/keydown

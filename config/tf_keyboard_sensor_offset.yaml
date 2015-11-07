@@ -1,0 +1,10 @@
+initial_x: 0.005
+initial_y: 0.04
+initial_z: 0.027
+initial_roll: 4.714
+initial_pitch: 1.57
+initial_yaw: 3.141
+from: schunk_finger_link
+to: finger_sensor_pad
+file_name: tf_keyboard_sensor_offset
+topic_name: /keyboard_sensor_offset/keydown

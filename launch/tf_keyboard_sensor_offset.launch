@@ -1,0 +1,10 @@
+<launch>
+  <!-- This launch file is made by Dave -->
+
+  <!-- Manual calibration of product hack offset -->
+  <node pkg="keyboard" type="keyboard" name="keyboard_sensor_offset" />
+  <node pkg="tf_keyboard_cal" type="tf_keyboard" name="tf_keyboard_sensor_offset" output="screen">
+    <rosparam command="load" file="$(find tf_keyboard_cal)/config/tf/tf_keyboard_sensor_offset.yaml"/>
+  </node>
+
+</launch>

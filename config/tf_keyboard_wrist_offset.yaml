@@ -1,0 +1,10 @@
+initial_x: -0.05195
+initial_y: -0.06585
+initial_z: -0.0445
+initial_roll: 0
+initial_pitch: 1.5708
+initial_yaw: -1.5708
+from: jaco2_link_hand
+to: calibration_hand_target
+file_name: tf_keyboard_wrist_offset
+topic_name: /keyboard_wrist_offset/keydown

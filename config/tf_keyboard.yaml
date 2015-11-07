@@ -1,0 +1,10 @@
+initial_x: 0.04
+initial_y: 0.05
+initial_z: -0.01
+initial_roll: -1.2508
+initial_pitch: -1.59
+initial_yaw: -0.14
+from: xtion
+to: camera_link
+file_name: tf_keyboard
+topic_name: /keyboard/keydown

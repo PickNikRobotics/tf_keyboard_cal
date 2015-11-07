@@ -1,0 +1,10 @@
+initial_x: 0.501
+initial_y: -1.515
+initial_z: -0.047
+initial_roll: -1.57
+initial_pitch: 1.57
+initial_yaw: 0
+from: calibration_target_frame
+to: shelf
+file_name: tf_keyboard_shelf_offset
+topic_name: /keyboard_shelf_offset/keydown
