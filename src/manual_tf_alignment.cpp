@@ -69,6 +69,7 @@ ManualTFAlignment::ManualTFAlignment()
   ros_param_shortcuts::getDoubleParam(parent_name, nh_, "initial_roll", roll);
   ros_param_shortcuts::getDoubleParam(parent_name, nh_, "initial_pitch", pitch);
   ros_param_shortcuts::getDoubleParam(parent_name, nh_, "initial_yaw", yaw);
+  ros_param_shortcuts::getStringParam(parent_name, nh_, "file_package", file_package_);
   ros_param_shortcuts::getStringParam(parent_name, nh_, "file_name", file_name_);
   ros_param_shortcuts::getStringParam(parent_name, nh_, "topic_name", topic_name_);
   setPose(Eigen::Vector3d(x, y, z), Eigen::Vector3d(roll, pitch, yaw));
@@ -78,9 +79,8 @@ ManualTFAlignment::ManualTFAlignment()
   ros_param_shortcuts::getStringParam(parent_name, nh_, "to", to_);
 
   // default, save in tf_keyboard_cal/data
-  std::string package_name = "tf_keyboard_cal";
-  std::string package_path = ros::package::getPath(package_name);
-  save_path_ = package_path + "/config/tf/" + file_name_ + ".yaml";
+  std::string package_path = ros::package::getPath(file_package_);
+  save_path_ = package_path + file_name_;
 
   // listen to keyboard topic
   keyboard_sub_ = nh_.subscribe(topic_name_, 100,
