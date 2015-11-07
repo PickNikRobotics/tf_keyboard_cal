@@ -267,6 +267,7 @@ void ManualTFAlignment::writeTFToFile()
     file << "initial_yaw: " << rotation_[2] << std::endl;
     file << "from: " << from_ << std::endl;
     file << "to: " << to_ << std::endl;
+    file << "file_package: " << file_package_ << std::endl;
     file << "file_name: " << file_name_ << std::endl;
     file << "topic_name: " << topic_name_ << std::endl;
   }
