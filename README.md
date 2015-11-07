@@ -2,6 +2,8 @@
 
 Move /tf frames around using your keyboard!
 
+<img align="right" src="https://raw.githubusercontent.com/davetcoleman/tf_keyboard_cal/jade-devel/resources/thing.png" />
+
 ## Usage:
 
 To test, create a new ``/thing`` coordiante from the following demo:
@@ -10,7 +12,7 @@ To test, create a new ``/thing`` coordiante from the following demo:
 
 Start Rviz and use the TF display to visualize its effect.
 
-You can now use the keyboard shorcuts below to move the frame around.
+You can now use the keyboard shorcuts below to move the frame around. Be sure to have the little black window focused on to recieve keyboard input.
 
     Manual alignment of camera to world CS:
     =======================================
