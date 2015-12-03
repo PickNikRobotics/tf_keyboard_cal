@@ -1,8 +1,14 @@
 # TF Keyboard Calibration
 
-Move /tf frames around using your keyboard!
+Move /tf frames around using your keyboard - a simple calibration-by-eye tool!
 
-<img align="right" src="https://raw.githubusercontent.com/davetcoleman/tf_keyboard_cal/jade-devel/resources/thing.png" />
+Developed by Andy McEvoy and [Dave Coleman](http://dav.ee/) at the University of Colorado Boulder
+
+ * [![Build Status](https://travis-ci.org/davetcoleman/tf_keyboard_cal.svg)](https://travis-ci.org/davetcoleman/tf_keyboard_cal) Travis CI
+ * [![Devel Job Status](http://jenkins.ros.org/buildStatus/icon?job=devel-indigo-tf-keyboard-cal)](http://jenkins.ros.org/job/devel-indigo-tf_keyboard_cal) Devel Job Status
+ * [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64/) AMD64 Debian Job Status
+
+~[](resources/thing.png)
 
 ## Usage:
 
@@ -16,13 +22,13 @@ You can now use the keyboard shorcuts below to move the frame around. Be sure to
 
     Manual alignment of camera to world CS:
     =======================================
-    MOVE: X  Y  Z  R  P  YAW 
+    MOVE: X  Y  Z  R  P  YAW
     ------------------------
-    up    q  w  e  r  t  y 
-    down  a  s  d  f  g  h 
-    Fast: u 
-    Med:  i 
-    Slow: o 
-    Save: p 
+    up    q  w  e  r  t  y
+    down  a  s  d  f  g  h
+    Fast: u
+    Med:  i
+    Slow: o
+    Save: p
 
 Create a launch file and configuration file similar to the demos in the package's ``config/`` and ``launch/`` folders.
