@@ -22,13 +22,13 @@
   <build_depend>tf2</build_depend>
   <build_depend>tf</build_depend>
   <build_depend>roslib</build_depend>
-  <build_depend>ros_param_shortcuts</build_depend>
+  <build_depend>rosparam_shortcuts</build_depend>
   
   <run_depend>keyboard</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>tf2</run_depend>
   <run_depend>tf</run_depend>
-  <run_depend>ros_param_shortcuts</run_depend>
+  <run_depend>rosparam_shortcuts</run_depend>
 
   <export>
   </export>

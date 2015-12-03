@@ -40,7 +40,7 @@
 #include <tf_keyboard_cal/manual_tf_alignment.h>
 
 // Parameter loading
-#include <ros_param_shortcuts/ros_param_shortcuts.h>
+#include <rosparam_shortcuts/rosparam_shortcuts.h>
 
 #include <iostream>
 #include <fstream>
@@ -63,20 +63,20 @@ ManualTFAlignment::ManualTFAlignment()
   // initial camera transform
   const std::string parent_name = "manipulation_data"; // for namespacing logging messages
   double x, y, z, roll, pitch, yaw;
-  ros_param_shortcuts::getDoubleParam(parent_name, nh_, "initial_x", x);
-  ros_param_shortcuts::getDoubleParam(parent_name, nh_, "initial_y", y);
-  ros_param_shortcuts::getDoubleParam(parent_name, nh_, "initial_z", z);
-  ros_param_shortcuts::getDoubleParam(parent_name, nh_, "initial_roll", roll);
-  ros_param_shortcuts::getDoubleParam(parent_name, nh_, "initial_pitch", pitch);
-  ros_param_shortcuts::getDoubleParam(parent_name, nh_, "initial_yaw", yaw);
-  ros_param_shortcuts::getStringParam(parent_name, nh_, "file_package", file_package_);
-  ros_param_shortcuts::getStringParam(parent_name, nh_, "file_name", file_name_);
-  ros_param_shortcuts::getStringParam(parent_name, nh_, "topic_name", topic_name_);
+  rosparam_shortcuts::getDoubleParam(parent_name, nh_, "initial_x", x);
+  rosparam_shortcuts::getDoubleParam(parent_name, nh_, "initial_y", y);
+  rosparam_shortcuts::getDoubleParam(parent_name, nh_, "initial_z", z);
+  rosparam_shortcuts::getDoubleParam(parent_name, nh_, "initial_roll", roll);
+  rosparam_shortcuts::getDoubleParam(parent_name, nh_, "initial_pitch", pitch);
+  rosparam_shortcuts::getDoubleParam(parent_name, nh_, "initial_yaw", yaw);
+  rosparam_shortcuts::getStringParam(parent_name, nh_, "file_package", file_package_);
+  rosparam_shortcuts::getStringParam(parent_name, nh_, "file_name", file_name_);
+  rosparam_shortcuts::getStringParam(parent_name, nh_, "topic_name", topic_name_);
   setPose(Eigen::Vector3d(x, y, z), Eigen::Vector3d(roll, pitch, yaw));
 
   // get frame names
-  ros_param_shortcuts::getStringParam(parent_name, nh_, "from", from_);
-  ros_param_shortcuts::getStringParam(parent_name, nh_, "to", to_);
+  rosparam_shortcuts::getStringParam(parent_name, nh_, "from", from_);
+  rosparam_shortcuts::getStringParam(parent_name, nh_, "to", to_);
 
   // default, save in tf_keyboard_cal/data
   std::string package_path = ros::package::getPath(file_package_);

@@ -11,7 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   roslib
   cmake_modules
-  ros_param_shortcuts
+  rosparam_shortcuts
 )
 
 find_package(Eigen REQUIRED)
@@ -26,7 +26,7 @@ catkin_package(
     keyboard roscpp 
     tf2
     tf
-    ros_param_shortcuts
+    rosparam_shortcuts
   DEPENDS 
     Eigen
 )
