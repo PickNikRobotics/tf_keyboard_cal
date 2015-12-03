@@ -8,7 +8,7 @@ Developed by Andy McEvoy and [Dave Coleman](http://dav.ee/) at the University of
  * [![Devel Job Status](http://jenkins.ros.org/buildStatus/icon?job=devel-indigo-tf-keyboard-cal)](http://jenkins.ros.org/job/devel-indigo-tf_keyboard_cal) Devel Job Status
  * [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64/) AMD64 Debian Job Status
 
-~[](resources/thing.png)
+![](resources/thing.png)
 
 ## Usage:
 
