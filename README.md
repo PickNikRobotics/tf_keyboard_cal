@@ -18,7 +18,9 @@ To test, create a new ``/thing`` coordiante from the following demo:
 
 Start Rviz and use the TF display to visualize its effect.
 
-You can now use the keyboard shorcuts below to move the frame around. Be sure to have the little black window focused on to recieve keyboard input.
+    roslaunch tf_keyboard_cal rviz_demo.launch
+
+You can now use the keyboard shorcuts below to move the frame around. **NOTE:** Be sure to have the little black window focused on to recieve keyboard input. Once the TF has been positioned, press `p` to save the settings to the config file. The TF will use these new settings when relaunched.
 
     Manual alignment of camera to world CS:
     =======================================
