@@ -2,8 +2,8 @@
 Changelog for package tf_keyboard_cal
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.3 (2015-12-03)
+------------------
 * Rename dependency ros_param_shortcuts to rosparam_shortcuts
 * Contributors: Dave Coleman
 
