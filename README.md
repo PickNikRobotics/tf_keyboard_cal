@@ -5,8 +5,8 @@ Move /tf frames around using your keyboard - a simple calibration-by-eye tool!
 Developed by Andy McEvoy and [Dave Coleman](http://dav.ee/) at the University of Colorado Boulder
 
  * [![Build Status](https://travis-ci.org/davetcoleman/tf_keyboard_cal.svg)](https://travis-ci.org/davetcoleman/tf_keyboard_cal) Travis CI
- * [![Devel Job Status](http://jenkins.ros.org/buildStatus/icon?job=devel-indigo-tf-keyboard-cal)](http://jenkins.ros.org/job/devel-indigo-tf_keyboard_cal) Devel Job Status
- * [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64/) AMD64 Debian Job Status
+ * [![Devel Job Status](http://jenkins.ros.org/buildStatus/icon?job=devel-jade-tf-keyboard-cal)](http://jenkins.ros.org/job/devel-jade-tf_keyboard_cal) Devel Job Status
+ * [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-jade-tf-keyboard-cal_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-jade-tf-keyboard-cal_binarydeb_trusty_amd64/) AMD64 Debian Job Status
 
 ![](resources/thing.png)
 
