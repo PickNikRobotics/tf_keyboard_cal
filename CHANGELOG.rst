@@ -2,8 +2,8 @@
 Changelog for package tf_keyboard_cal
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.4 (2015-12-05)
+------------------
 * catkin lint cleanup
 * Fixed travis
 * Contributors: Dave Coleman
