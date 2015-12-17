@@ -1,7 +1,7 @@
 <launch>
   <!-- Manual calibration of a thing -->
   <node pkg="keyboard" type="keyboard" name="keyboard_world_to_thing" />
-  <node pkg="tf_keyboard_cal" type="tf_keyboard" name="tf_keyboard_world_to_thing" output="screen">
+  <node pkg="tf_keyboard_cal" type="tf_keyboard_cal" name="tf_keyboard_world_to_thing" output="screen">
     <rosparam command="load" file="$(find tf_keyboard_cal)/config/tf_keyboard_world_to_thing.yaml"/>
   </node>
 
