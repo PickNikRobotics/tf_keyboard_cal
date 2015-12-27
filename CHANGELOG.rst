@@ -2,6 +2,12 @@
 Changelog for package tf_keyboard_cal
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix roslaunch file
+* Updated README
+* Contributors: Dave Coleman
+
 0.0.4 (2015-12-05)
 ------------------
 * catkin lint cleanup
