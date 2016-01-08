@@ -53,30 +53,31 @@ namespace tf_keyboard_cal
 
 ManualTFAlignment::ManualTFAlignment()
   : nh_("~")
+  , name_("manipulation_data") // for namespacing logging messages
 {
   // set defaults
   mode_ = 1;
   delta_ = 0.010;
 
-  // Get settings from rosparam
-
   // initial camera transform
-  const std::string parent_name = "manipulation_data"; // for namespacing logging messages
   double x, y, z, roll, pitch, yaw;
-  rosparam_shortcuts::getDoubleParam(parent_name, nh_, "initial_x", x);
-  rosparam_shortcuts::getDoubleParam(parent_name, nh_, "initial_y", y);
-  rosparam_shortcuts::getDoubleParam(parent_name, nh_, "initial_z", z);
-  rosparam_shortcuts::getDoubleParam(parent_name, nh_, "initial_roll", roll);
-  rosparam_shortcuts::getDoubleParam(parent_name, nh_, "initial_pitch", pitch);
-  rosparam_shortcuts::getDoubleParam(parent_name, nh_, "initial_yaw", yaw);
-  rosparam_shortcuts::getStringParam(parent_name, nh_, "file_package", file_package_);
-  rosparam_shortcuts::getStringParam(parent_name, nh_, "file_name", file_name_);
-  rosparam_shortcuts::getStringParam(parent_name, nh_, "topic_name", topic_name_);
-  setPose(Eigen::Vector3d(x, y, z), Eigen::Vector3d(roll, pitch, yaw));
 
-  // get frame names
-  rosparam_shortcuts::getStringParam(parent_name, nh_, "from", from_);
-  rosparam_shortcuts::getStringParam(parent_name, nh_, "to", to_);
+  // Get settings from rosparam
+  std::size_t error = 0;
+  error += !rosparam_shortcuts::get(name_, nh_, "initial_x", x);
+  error += !rosparam_shortcuts::get(name_, nh_, "initial_y", y);
+  error += !rosparam_shortcuts::get(name_, nh_, "initial_z", z);
+  error += !rosparam_shortcuts::get(name_, nh_, "initial_roll", roll);
+  error += !rosparam_shortcuts::get(name_, nh_, "initial_pitch", pitch);
+  error += !rosparam_shortcuts::get(name_, nh_, "initial_yaw", yaw);
+  error += !rosparam_shortcuts::get(name_, nh_, "file_package", file_package_);
+  error += !rosparam_shortcuts::get(name_, nh_, "file_name", file_name_);
+  error += !rosparam_shortcuts::get(name_, nh_, "topic_name", topic_name_);
+  error += !rosparam_shortcuts::get(name_, nh_, "from", from_);
+  error += !rosparam_shortcuts::get(name_, nh_, "to", to_);
+  rosparam_shortcuts::shutdownIfError(name_, error);
+
+  setPose(Eigen::Vector3d(x, y, z), Eigen::Vector3d(roll, pitch, yaw));
 
   // default, save in tf_keyboard_cal/data
   std::string package_path = ros::package::getPath(file_package_);
@@ -90,8 +91,8 @@ ManualTFAlignment::ManualTFAlignment()
   ROS_INFO_STREAM_NAMED("manualTF","Listening to topic : " << topic_name_);
   ROS_INFO_STREAM_NAMED("manualTF","Transform from     : " << from_);
   ROS_INFO_STREAM_NAMED("manualTF","Transform to       : " << to_);
-  ROS_INFO_STREAM_NAMED("manualTF","Config File        : " << save_path_);  
-  ROS_INFO_STREAM_NAMED("manualTF","Initial transform  : " << x << ", " << y << ", " << z << ", " << roll << ", " << pitch << ", " << yaw );  
+  ROS_INFO_STREAM_NAMED("manualTF","Config File        : " << save_path_);
+  ROS_INFO_STREAM_NAMED("manualTF","Initial transform  : " << x << ", " << y << ", " << z << ", " << roll << ", " << pitch << ", " << yaw );
 }
 
 void ManualTFAlignment::keyboardCallback(const keyboard::Key::ConstPtr& msg)
@@ -123,50 +124,50 @@ void ManualTFAlignment::keyboardCallback(const keyboard::Key::ConstPtr& msg)
 
     // X axis
     case 113: // up
-      updateTF(1, delta_);      
+      updateTF(1, delta_);
       break;
     case 97: // down
-      updateTF(1, -delta_);      
+      updateTF(1, -delta_);
       break;
 
     // y axis
     case 119: // up
-      updateTF(2, delta_);      
+      updateTF(2, delta_);
       break;
     case 115: // down
-      updateTF(2, -delta_);      
+      updateTF(2, -delta_);
       break;
 
     // z axis
     case 101: // up
-      updateTF(3, delta_);      
+      updateTF(3, delta_);
       break;
     case 100: // down
-      updateTF(3, -delta_);      
+      updateTF(3, -delta_);
       break;
 
     // roll
     case 114: // up
-      updateTF(4, delta_);      
+      updateTF(4, delta_);
       break;
     case 102: // down
-      updateTF(4, -delta_);      
+      updateTF(4, -delta_);
       break;
 
     // pitch
     case 116: // up
-      updateTF(5, delta_);      
+      updateTF(5, delta_);
       break;
     case 103: // down
-      updateTF(5, -delta_);      
+      updateTF(5, -delta_);
       break;
 
     // yaw
     case 121: // up
-      updateTF(6, delta_);      
+      updateTF(6, delta_);
       break;
     case 104: // down
-      updateTF(6, -delta_);      
+      updateTF(6, -delta_);
       break;
 
     default:
@@ -255,10 +256,10 @@ void ManualTFAlignment::writeTFToFile()
     ROS_ERROR_STREAM_NAMED("tf_align.write","Output file could not be opened: " << save_path_);
   else
   {
-    ROS_INFO_STREAM_NAMED("tf_align.write","Initial transform  : " << translation_[0] << ", " << translation_[1] 
-                          << ", " << translation_[2] << ", " << rotation_[0] << ", " << rotation_[1] 
-                          << ", " << rotation_[2] );  
-    
+    ROS_INFO_STREAM_NAMED("tf_align.write","Initial transform  : " << translation_[0] << ", " << translation_[1]
+                          << ", " << translation_[2] << ", " << rotation_[0] << ", " << rotation_[1]
+                          << ", " << rotation_[2] );
+
     file << "initial_x: " << translation_[0] << std::endl;
     file << "initial_y: " << translation_[1] << std::endl;
     file << "initial_z: " << translation_[2] << std::endl;

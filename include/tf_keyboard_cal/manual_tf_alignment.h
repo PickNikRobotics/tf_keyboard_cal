@@ -61,19 +61,19 @@ public:
    * \brief
    */
   ManualTFAlignment();
-    
+
   /*
    * \brief
    */
   void keyboardCallback(const keyboard::Key::ConstPtr& msg);
-  
+
   /*
    * \brief
    */
   void printMenu();
 
-  /* 
-   * \brief 
+  /*
+   * \brief
    */
   void publishTF();
 
@@ -86,11 +86,14 @@ public:
    * \brief
    */
   void updateTF(int mode, double delta);
-  
+
   /*
    * \brief
    */
   void writeTFToFile();
+
+  // Name of class
+  std::string name_;
 
   Eigen::Vector3d translation_;
   Eigen::Vector3d rotation_;
@@ -104,7 +107,6 @@ public:
   std::string topic_name_;
   ros::Subscriber keyboard_sub_;
   ros::NodeHandle nh_;
-
 };
 
 } // end namespace
