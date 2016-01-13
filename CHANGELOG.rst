@@ -2,8 +2,8 @@
 Changelog for package tf_keyboard_cal
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.6 (2016-01-13)
+------------------
 * API deprecation fix for rosparam_shortcuts
 * Contributors: Dave Coleman
 
