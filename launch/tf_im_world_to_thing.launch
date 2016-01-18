@@ -1,0 +1,8 @@
+<launch>
+  <!-- Manual calibration of a thing -->
+  <node pkg="tf_keyboard_cal" type="tf_interactive_marker.py" 
+  	    name="tf_im_world_to_thing" output="screen"
+  	    args="world thing 1.0 0.0 1.0 0.0 0.0 90.0 deg">
+  </node>
+
+</launch>
