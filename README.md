@@ -9,9 +9,11 @@ TF Keyboard Calibration developed by Andy McEvoy and [Dave Coleman](http://dav.e
  * [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64/) AMD64 Debian Job Status
 
 ![](resources/keyboard_screenshot.png)
+
 Screenshot of calibration using keyboard shortcuts
 
 ![](resources/interactive_marker_screenshot.png)
+
 Screenshot of calibration using interactive markers and the mouse
 
 [Video example](https://www.youtube.com/watch?v=C9BbFv-C9Zo) of interactive marker tf calibration.
