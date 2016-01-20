@@ -202,11 +202,11 @@ class InteractiveMarkerPoseStampedPublisher():
         # An arrow that's squashed to easier view the orientation on roll
         marker.type = Marker.ARROW
         marker.scale.x = 0.15
-        marker.scale.y = 0.08
-        marker.scale.z = 0.03
-        marker.color.r = 0.3
-        marker.color.g = 0.3
-        marker.color.b = 0.5
+        marker.scale.y = 0.05
+        marker.scale.z = 0.05
+        marker.color.r = 1.0
+        marker.color.g = 0.0
+        marker.color.b = 0.0
         marker.color.a = 1.0
 
         return marker

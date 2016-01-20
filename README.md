@@ -1,10 +1,6 @@
-# TF Keyboard Calibration and TF Interactive Marker
+# Manual TF Calibration Tools
 
-Move /tf frames around using your keyboard - a simple calibration-by-eye tool!
-
-Or
-
-Move /tf frames around using an Interactive marker!
+Move /tf frames around using your keyboard or interactive markers - a simple calibration-by-eye tool!
 
 TF Keyboard Calibration developed by Andy McEvoy and [Dave Coleman](http://dav.ee/) at the University of Colorado Boulder, TF Interactive Marker developed by [Sammy Pfeiffer](http://github.com/awesomebytes) at PAL Robotics.
 
@@ -13,6 +9,8 @@ TF Keyboard Calibration developed by Andy McEvoy and [Dave Coleman](http://dav.e
  * [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64/) AMD64 Debian Job Status
 
 ![](resources/thing.png)
+
+[Video example](https://www.youtube.com/watch?v=C9BbFv-C9Zo) of interactive marker tf calibration.
 
 ## Usage of TF Keyboard Cal:
 
@@ -42,21 +40,17 @@ Create a launch file and configuration file similar to the demos in the package'
 
 ## Usage of TF Interactive Marker
 
-Note that this node is self contained! You can just copy tf_interactive_marker.py and it will work in a standalone fashion.
+Interactive marker /tf calibration is implemented in an entirely seperate python node from the keyboard functionality and it is self contained. You can copy ``tf_interactive_marker.py`` and it will work in a standalone fashion. Use ``-h`` to get help on this node's various command line arguments.
 
-To test, create a new ``/thing`` coordinate from the following demo (check out the parameters with -h):
-
-    rosrun tf_keyboard_cal tf_interactive_marker.py base_footprint new_frame 1.0 0.0 1.0 0.0 0.0 1.57
-
-You can also check the launch example (does the same):
-
-    roslaunch tf_keyboard_cal tf_im_world_to_thing.launch
-
-Start Rviz and use the TF display to visualize its effect.
+To test, first run Rviz:
 
     roslaunch tf_keyboard_cal rviz_demo.launch
 
-Meanwhile you move the Interactive Marker the TF transform will be published (can be stopped with right click menu of the IM) and you'll see an output in the terminal like:
+Next run the following demo to create a ``/thing`` tf:
+
+    roslaunch tf_keyboard_cal tf_im_world_to_thing.launch
+
+Now you should be able to move the Interactive Marker and the TF transform will be published (can be stopped with right click menu of the IM) and you'll see an output in the terminal like:
 
 ````
 Static transform publisher command (with roll pitch yaw):
@@ -72,6 +66,4 @@ URDF format:
   <origin xyz="1.0 0.0 1.0" rpy="0.0 -0.0 1.57" />
 ````
 
-Which hopefully makes your life easier, you can check out a [video example here](https://www.youtube.com/watch?v=C9BbFv-C9Zo).
-
-
+Which hopefully makes your life easier :-)
