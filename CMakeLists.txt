@@ -77,3 +77,9 @@ install(PROGRAMS
   scripts/tf_interactive_marker.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+# Install launch files
+install(DIRECTORY
+  launch
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
