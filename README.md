@@ -4,6 +4,8 @@ Move /tf frames around using your keyboard or interactive markers - a simple cal
 
 TF Keyboard Calibration developed by Andy McEvoy and [Dave Coleman](http://dav.ee/) at the University of Colorado Boulder, TF Interactive Marker developed by [Sammy Pfeiffer](http://github.com/awesomebytes) at PAL Robotics.
 
+Status:
+
  * [![Build Status](https://travis-ci.org/davetcoleman/tf_keyboard_cal.svg)](https://travis-ci.org/davetcoleman/tf_keyboard_cal) Travis CI
  * [![Devel Job Status](http://jenkins.ros.org/buildStatus/icon?job=devel-indigo-tf_keyboard_cal)](http://jenkins.ros.org/job/devel-indigo-tf_keyboard_cal) Devel Job Status
  * [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64/) AMD64 Debian Job Status
@@ -17,6 +19,22 @@ Screenshot of calibration using keyboard shortcuts
 Screenshot of calibration using interactive markers and the mouse
 
 [Video example](https://www.youtube.com/watch?v=C9BbFv-C9Zo) of interactive marker tf calibration.
+
+## Install
+
+### Ubuntu Debian
+
+    sudo apt-get install ros-indigo-tf-keyboard-cal
+
+### Build from Source
+
+To build this package, ``git clone`` this repo into a [catkin workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) and be sure to install necessary dependencies by running the following command in the root of your catkin workspace:
+
+    rosdep install -y --from-paths src --ignore-src --rosdistro indigo
+
+## Code API
+
+See [Class Reference](http://docs.ros.org/indigo/api/tf_keyboard_cal/html/)
 
 ## Usage of TF Keyboard Cal:
 
