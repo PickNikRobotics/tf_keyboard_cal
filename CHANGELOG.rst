@@ -2,8 +2,8 @@
 Changelog for package tf_keyboard_cal
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2016-02-09)
+------------------
 * Install launch files
 * Added new screenshot for imarkers
 * Updated README, tweaked arrow
