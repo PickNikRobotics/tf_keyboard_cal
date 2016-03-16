@@ -91,3 +91,9 @@ URDF format:
 ````
 
 Which hopefully makes your life easier :-)
+
+## Demo TF Listener
+
+If you want to get the Eigen or ROS message formatted pose from the interactive marker or keyboard calibration, see the template code:
+
+    src/demo_tf_listener.cpp1;2802;0c

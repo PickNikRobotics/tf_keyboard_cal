@@ -7,8 +7,11 @@ find_package(catkin REQUIRED COMPONENTS
   tf2
   tf
   roslib
+  roslint
   cmake_modules
   rosparam_shortcuts
+  rviz_visual_tools
+  tf_conversions
 )
 
 find_package(Eigen REQUIRED)
@@ -57,7 +60,28 @@ target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 
-# Install
+# Executable
+add_executable(${PROJECT_NAME}_demo_tf_listener
+  src/demo_tf_listener.cpp
+)
+# Rename C++ executable without namespace
+set_target_properties(${PROJECT_NAME}_demo_tf_listener
+  PROPERTIES OUTPUT_NAME demo_tf_listener PREFIX "")
+# Specify libraries to link a library or executable target against
+target_link_libraries(${PROJECT_NAME}_demo_tf_listener
+  ${catkin_LIBRARIES}
+)
+
+#############
+## Testing ##
+#############
+
+## Test for correct C++ source code
+roslint_cpp()
+
+#############
+## Install ##
+#############
 
 # Install libraries
 install(TARGETS ${PROJECT_NAME}_manual_tf_alignment
@@ -67,7 +91,7 @@ install(TARGETS ${PROJECT_NAME}_manual_tf_alignment
 install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
 
 # Install executables
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_demo_tf_listener
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
