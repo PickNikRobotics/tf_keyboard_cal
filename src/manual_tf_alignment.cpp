@@ -70,7 +70,8 @@ ManualTFAlignment::ManualTFAlignment()
   error += !rosparam_shortcuts::get(name_, nh_, "initial_roll", roll);
   error += !rosparam_shortcuts::get(name_, nh_, "initial_pitch", pitch);
   error += !rosparam_shortcuts::get(name_, nh_, "initial_yaw", yaw);
-  error += !rosparam_shortcuts::get(name_, nh_, "file_package", file_package_);
+  if (!rosparam_shortcuts::get(name_, nh_, "save_to_package", file_package_))
+    error += rosparam_shortcuts::get(name_, nh_, "file_package", file_package_);
   error += !rosparam_shortcuts::get(name_, nh_, "file_name", file_name_);
   error += !rosparam_shortcuts::get(name_, nh_, "topic_name", topic_name_);
   error += !rosparam_shortcuts::get(name_, nh_, "from", from_);
