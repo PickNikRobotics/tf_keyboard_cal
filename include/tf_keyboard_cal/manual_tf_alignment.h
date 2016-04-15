@@ -102,7 +102,7 @@ public:
   double delta_;
   std::string from_;
   std::string to_;
-  std::string file_package_;
+  std::string save_to_package_;
   std::string file_name_;
   std::string topic_name_;
   ros::Subscriber keyboard_sub_;
