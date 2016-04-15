@@ -70,8 +70,8 @@ ManualTFAlignment::ManualTFAlignment()
   error += !rosparam_shortcuts::get(name_, nh_, "initial_roll", roll);
   error += !rosparam_shortcuts::get(name_, nh_, "initial_pitch", pitch);
   error += !rosparam_shortcuts::get(name_, nh_, "initial_yaw", yaw);
-  if (!rosparam_shortcuts::get(name_, nh_, "save_to_package", file_package_))
-    error += rosparam_shortcuts::get(name_, nh_, "file_package", file_package_);
+  if (!rosparam_shortcuts::get(name_, nh_, "save_to_package", save_to_package_))
+    error += rosparam_shortcuts::get(name_, nh_, "file_package", save_to_package_);
   error += !rosparam_shortcuts::get(name_, nh_, "file_name", file_name_);
   error += !rosparam_shortcuts::get(name_, nh_, "topic_name", topic_name_);
   error += !rosparam_shortcuts::get(name_, nh_, "from", from_);
@@ -81,7 +81,7 @@ ManualTFAlignment::ManualTFAlignment()
   setPose(Eigen::Vector3d(x, y, z), Eigen::Vector3d(roll, pitch, yaw));
 
   // default, save in tf_keyboard_cal/data
-  std::string package_path = ros::package::getPath(file_package_);
+  std::string package_path = ros::package::getPath(save_to_package_);
   save_path_ = package_path + file_name_;
 
   // listen to keyboard topic
@@ -269,7 +269,7 @@ void ManualTFAlignment::writeTFToFile()
     file << "initial_yaw: " << rotation_[2] << std::endl;
     file << "from: " << from_ << std::endl;
     file << "to: " << to_ << std::endl;
-    file << "file_package: " << file_package_ << std::endl;
+    file << "save_to_package: " << save_to_package_ << std::endl;
     file << "file_name: " << file_name_ << std::endl;
     file << "topic_name: " << topic_name_ << std::endl;
   }
