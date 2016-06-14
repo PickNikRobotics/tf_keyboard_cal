@@ -92,8 +92,10 @@ public:
    */
   void writeTFToFile();
 
+  ros::NodeHandle nh_;
+
   // Name of class
-  std::string name_;
+  std::string name_ = "manipulation_data";
 
   Eigen::Vector3d translation_;
   Eigen::Vector3d rotation_;
@@ -106,7 +108,6 @@ public:
   std::string file_name_;
   std::string topic_name_;
   ros::Subscriber keyboard_sub_;
-  ros::NodeHandle nh_;
 };
 
 } // end namespace

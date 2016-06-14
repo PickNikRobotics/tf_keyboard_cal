@@ -37,6 +37,7 @@
  * Desc   : Allows manual control of a TF through the keyboard
  */
 
+
 #include <tf_keyboard_cal/manual_tf_alignment.h>
 
 // Parameter loading
@@ -53,7 +54,6 @@ namespace tf_keyboard_cal
 
 ManualTFAlignment::ManualTFAlignment()
   : nh_("~")
-  , name_("manipulation_data") // for namespacing logging messages
 {
   // set defaults
   mode_ = 1;
