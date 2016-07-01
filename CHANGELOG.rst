@@ -2,6 +2,14 @@
 Changelog for package tf_keyboard_cal
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Install launch files
+* Added new screenshot for imarkers
+* Updated README, tweaked arrow
+* Adding TF Interactive marker
+* Contributors: Dave Coleman, Gaël Ecorchard, Sammy Pfeiffer
+
 0.0.6 (2016-01-13)
 ------------------
 * API deprecation fix for rosparam_shortcuts
