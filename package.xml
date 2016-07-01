@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>tf_keyboard_cal</name>
-  <version>0.0.6</version>
+  <version>0.1.0</version>
   <description>Allows manual control of a TF through the keyboard</description>
 
   <maintainer email="davetcoleman@gmail.com">Dave Coleman</maintainer>
