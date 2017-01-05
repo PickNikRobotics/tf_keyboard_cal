@@ -55,10 +55,10 @@ target_link_libraries(${PROJECT_NAME}_manual_tf_alignment
 )
 
 # Library
-add_library(${PROJECT_NAME}_imarker_wrapper
-  src/imarker_wrapper.cpp
+add_library(${PROJECT_NAME}_imarker_simple
+  src/imarker_simple.cpp
 )
-target_link_libraries(${PROJECT_NAME}_imarker_wrapper
+target_link_libraries(${PROJECT_NAME}_imarker_simple
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
 )
@@ -96,7 +96,7 @@ roslint_cpp()
 #############
 
 # Install libraries
-install(TARGETS ${PROJECT_NAME}_manual_tf_alignment ${PROJECT_NAME}_imarker_wrapper
+install(TARGETS ${PROJECT_NAME}_manual_tf_alignment ${PROJECT_NAME}_imarker_simple
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
 
 # Install header files

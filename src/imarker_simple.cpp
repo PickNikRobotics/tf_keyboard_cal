@@ -36,7 +36,7 @@
    Desc:   Use interactive markers in a C++ class via the external python node
 */
 
-#include <tf_keyboard_cal/imarker_wrapper.h>
+#include <tf_keyboard_cal/imarker_simple.h>
 
 namespace tf_keyboard_cal
 {

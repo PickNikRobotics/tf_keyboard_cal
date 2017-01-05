@@ -36,8 +36,8 @@
    Desc:   Use interactive markers in a C++ class via the external python node
 */
 
-#ifndef TF_KEYBOARD_CAL_IMARKER_WRAPPER_H
-#define TF_KEYBOARD_CAL_IMARKER_WRAPPER_H
+#ifndef TF_KEYBOARD_CAL_IMARKER_SIMPLE_H
+#define TF_KEYBOARD_CAL_IMARKER_SIMPLE_H
 
 // ROS
 #include <ros/ros.h>
@@ -101,4 +101,4 @@ typedef std::shared_ptr<IMarkerSimple> IMarkerSimplePtr;
 typedef std::shared_ptr<const IMarkerSimple> IMarkerSimpleConstPtr;
 
 } // namespace tf_keyboard_cal
-#endif  // TF_KEYBOARD_CAL_IMARKER_WRAPPER_H
+#endif  // TF_KEYBOARD_CAL_IMARKER_SIMPLE_H
