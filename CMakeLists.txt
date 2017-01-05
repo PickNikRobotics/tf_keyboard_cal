@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   rosparam_shortcuts
   rviz_visual_tools
   tf_conversions
+  interactive_markers
 )
 
 find_package(Eigen REQUIRED)
@@ -25,11 +26,13 @@ catkin_package(
     include
   LIBRARIES
     ${PROJECT_NAME}_manual_tf_alignment
+    ${PROJECT_NAME}_imarker_simple
   CATKIN_DEPENDS
     keyboard roscpp
     tf2
     tf
     rosparam_shortcuts
+    interactive_markers
   DEPENDS
     Eigen
 )

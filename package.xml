@@ -27,6 +27,7 @@
   <depend>cmake_modules</depend>
   <depend>roslint</depend>
   <depend>tf_conversions</depend>
+  <depend>interactive_markers</depend>
 
   <export>
   </export>

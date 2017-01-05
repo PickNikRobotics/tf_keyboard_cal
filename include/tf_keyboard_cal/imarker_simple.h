@@ -69,8 +69,6 @@ geometry_msgs::Pose& getPose();
 
 void iMarkerCallback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback);
 
-void initializeInteractiveMarkers();
-
 void sendUpdatedIMarkerPose();
 
 void make6DofMarker(const geometry_msgs::Pose &pose);
@@ -80,7 +78,7 @@ private:
 // --------------------------------------------------------
 
 // The short name of this class
-std::string name_ = "imarker_wrapper";
+std::string name_ = "imarker_simple";
 
 // A shared node handle
 ros::NodeHandle nh_;

@@ -47,8 +47,16 @@ namespace tf_keyboard_cal
     const std::string imarker_topic = nh_.getNamespace() + "/imarker";
     imarker_server_.reset(new interactive_markers::InteractiveMarkerServer(imarker_topic, "", false));
 
-  // Create imarker
-  initializeInteractiveMarkers();
+    // Initialize Pose
+    latest_pose_.orientation.w = 0;
+
+    ros::Duration(2.0).sleep();
+
+    // Create imarker
+    make6DofMarker(latest_pose_);
+
+    // Apply
+    imarker_server_->applyChanges();
   }
 
   geometry_msgs::Pose& IMarkerSimple::getPose()
@@ -56,80 +64,70 @@ namespace tf_keyboard_cal
     return latest_pose_;
   }
 
-void IMarkerSimple::iMarkerCallback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback)
-{
-  // Ignore if not pose update
-  if (feedback->event_type != visualization_msgs::InteractiveMarkerFeedback::POSE_UPDATE)
-    return;
+  void IMarkerSimple::iMarkerCallback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback)
+  {
+    // Ignore if not pose update
+    if (feedback->event_type != visualization_msgs::InteractiveMarkerFeedback::POSE_UPDATE)
+      return;
 
-  latest_pose_ = feedback->pose;
-}
+    latest_pose_ = feedback->pose;
+  }
 
-void IMarkerSimple::initializeInteractiveMarkers()
-{
-  // marker
-  make6DofMarker(latest_pose_);
-}
+  void IMarkerSimple::sendUpdatedIMarkerPose()
+  {
+    imarker_server_->setPose(int_marker_.name, latest_pose_);
+    imarker_server_->applyChanges();
+  }
 
-void IMarkerSimple::sendUpdatedIMarkerPose()
-{
-  imarker_server_->setPose(int_marker_.name, latest_pose_);
-  imarker_server_->applyChanges();
-}
+  void IMarkerSimple::make6DofMarker(const geometry_msgs::Pose &pose)
+  {
+    ROS_INFO_STREAM_NAMED(name_, "Making 6dof interactive marker named " << name_);
 
-void IMarkerSimple::make6DofMarker(const geometry_msgs::Pose &pose)
-{
-  ROS_DEBUG_STREAM_NAMED(name_, "Making 6dof interactive marker named " << name_);
+    int_marker_.header.frame_id = "world";
+    int_marker_.pose = pose;
+    int_marker_.scale = 0.2;
 
-  int_marker_.header.frame_id = "world";
-  int_marker_.pose = pose;
-  int_marker_.scale = 0.2;
+    int_marker_.name = name_;
 
-  int_marker_.name = name_;
-  //int_marker_.description = "imarker_" + name_; // TODO: unsure, but I think this causes a caption in Rviz that I don't want
+    // int_marker_.controls[0].interaction_mode = InteractiveMarkerControl::MENU;
 
-  // insert a box
-  // makeBoxControl(int_marker_);
+    InteractiveMarkerControl control;
+    control.orientation.w = 1;
+    control.orientation.x = 1;
+    control.orientation.y = 0;
+    control.orientation.z = 0;
+    control.name = "rotate_x";
+    control.interaction_mode = InteractiveMarkerControl::ROTATE_AXIS;
+    int_marker_.controls.push_back(control);
+    control.name = "move_x";
+    control.interaction_mode = InteractiveMarkerControl::MOVE_AXIS;
+    int_marker_.controls.push_back(control);
 
-  // int_marker_.controls[0].interaction_mode = InteractiveMarkerControl::MENU;
+    control.orientation.w = 1;
+    control.orientation.x = 0;
+    control.orientation.y = 1;
+    control.orientation.z = 0;
+    control.name = "rotate_z";
+    control.interaction_mode = InteractiveMarkerControl::ROTATE_AXIS;
+    int_marker_.controls.push_back(control);
+    control.name = "move_z";
+    control.interaction_mode = InteractiveMarkerControl::MOVE_AXIS;
+    int_marker_.controls.push_back(control);
 
-  InteractiveMarkerControl control;
-  control.orientation.w = 1;
-  control.orientation.x = 1;
-  control.orientation.y = 0;
-  control.orientation.z = 0;
-  control.name = "rotate_x";
-  control.interaction_mode = InteractiveMarkerControl::ROTATE_AXIS;
-  int_marker_.controls.push_back(control);
-  control.name = "move_x";
-  control.interaction_mode = InteractiveMarkerControl::MOVE_AXIS;
-  int_marker_.controls.push_back(control);
+    control.orientation.w = 1;
+    control.orientation.x = 0;
+    control.orientation.y = 0;
+    control.orientation.z = 1;
+    control.name = "rotate_y";
+    control.interaction_mode = InteractiveMarkerControl::ROTATE_AXIS;
+    int_marker_.controls.push_back(control);
+    control.name = "move_y";
+    control.interaction_mode = InteractiveMarkerControl::MOVE_AXIS;
+    int_marker_.controls.push_back(control);
 
-  control.orientation.w = 1;
-  control.orientation.x = 0;
-  control.orientation.y = 1;
-  control.orientation.z = 0;
-  control.name = "rotate_z";
-  control.interaction_mode = InteractiveMarkerControl::ROTATE_AXIS;
-  int_marker_.controls.push_back(control);
-  control.name = "move_z";
-  control.interaction_mode = InteractiveMarkerControl::MOVE_AXIS;
-  int_marker_.controls.push_back(control);
-
-  control.orientation.w = 1;
-  control.orientation.x = 0;
-  control.orientation.y = 0;
-  control.orientation.z = 1;
-  control.name = "rotate_y";
-  control.interaction_mode = InteractiveMarkerControl::ROTATE_AXIS;
-  int_marker_.controls.push_back(control);
-  control.name = "move_y";
-  control.interaction_mode = InteractiveMarkerControl::MOVE_AXIS;
-  int_marker_.controls.push_back(control);
-
-  imarker_server_->insert(int_marker_);
-  imarker_server_->setCallback(int_marker_.name, boost::bind(&IMarkerSimple::iMarkerCallback, this, _1));
-  // menu_handler_.apply(*imarker_server_, int_marker_.name);
-}
+    imarker_server_->insert(int_marker_);
+    imarker_server_->setCallback(int_marker_.name, boost::bind(&IMarkerSimple::iMarkerCallback, this, _1));
+    // menu_handler_.apply(*imarker_server_, int_marker_.name);
+  }
 
 } // namespace tf_keyboard_cal
