@@ -54,6 +54,15 @@ target_link_libraries(${PROJECT_NAME}_manual_tf_alignment
   ${Boost_LIBRARIES}
 )
 
+# Library
+add_library(${PROJECT_NAME}_imarker_wrapper
+  src/imarker_wrapper.cpp
+)
+target_link_libraries(${PROJECT_NAME}_imarker_wrapper
+  ${catkin_LIBRARIES}
+  ${Boost_LIBRARIES}
+)
+
 # Executable
 add_executable(${PROJECT_NAME}
   src/tf_keyboard.cpp
@@ -87,7 +96,7 @@ roslint_cpp()
 #############
 
 # Install libraries
-install(TARGETS ${PROJECT_NAME}_manual_tf_alignment
+install(TARGETS ${PROJECT_NAME}_manual_tf_alignment ${PROJECT_NAME}_imarker_wrapper
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
 
 # Install header files
