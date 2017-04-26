@@ -10,14 +10,14 @@
   <license>BSD</license>
 
   <url type="website">https://github.com/davetcoleman/tf_keyboard_cal</url>
-  <url type="butracker">https://github.com/davetcoleman/tf_keyboard_cal/issues</url>
+  <url type="bugtracker">https://github.com/davetcoleman/tf_keyboard_cal/issues</url>
   <url type="repository">https://github.com/davetcoleman/tf_keyboard_cal/</url>
 
   <author email="davetcoleman@gmail.com">Dave Coleman</author>
   <author email="mcevoy.andy@gmail.com">Andy McEvoy</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <depend>keyboard</depend>
+  <!-- <depend>keyboard</depend> -->
   <depend>rviz_visual_tools</depend>
   <depend>roscpp</depend>
   <depend>tf2</depend>
@@ -30,5 +30,6 @@
   <depend>interactive_markers</depend>
 
   <export>
+    <rviz plugin="${prefix}/plugin_description.xml"/>
   </export>
 </package>
