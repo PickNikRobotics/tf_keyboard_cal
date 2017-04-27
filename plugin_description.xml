@@ -6,11 +6,4 @@
       A panel widget that allows you to create and control TFs.
     </description>
   </class>
-
-  <class name="tf_keyboard_cal/TFCalTool" type="tf_keyboard_cal::TFCalTool" base_class_type="rviz::Tool">
-    <description>
-      A tool to capture keyboard and mouse input.
-    </description>
-  </class>
-
 </library>

@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   rviz_visual_tools
   tf_conversions
   interactive_markers
+  rviz
 )
 
 find_package(Eigen REQUIRED)
@@ -22,8 +23,9 @@ find_package(Boost REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS
-    include
+  include
   LIBRARIES
+  ${PROJECT_NAME}_gui  
 #    ${PROJECT_NAME}_manual_tf_alignment
 #    ${PROJECT_NAME}_imarker_simple
   CATKIN_DEPENDS
@@ -37,9 +39,33 @@ catkin_package(
     Eigen
 )
 
-###########
-## Build ##
-###########
+# Qt 4 or 5
+if(rviz_QT_VERSION VERSION_LESS "5")
+  message(STATUS "Using Qt4 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
+  find_package(Qt4 ${rviz_QT_VERSION} REQUIRED QtCore QtGui)
+  include(${QT_USE_FILE})
+  macro(qt_wrap_ui)
+    qt4_wrap_ui(${ARGN})
+  endmacro()
+  macro(qt_wrap_cpp)
+    qt4_wrap_cpp(${ARGN})
+  endmacro()
+else()
+  message(STATUS "Using Qt5 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
+  find_package(Qt5 ${rviz_QT_VERSION} REQUIRED Core Widgets)
+  set(QT_LIBRARIES Qt5::Widgets)
+  macro(qt_wrap_ui)
+    qt5_wrap_ui(${ARGN})
+  endmacro()
+  macro(qt_wrap_cpp)
+    qt5_wrap_cpp(${ARGN})
+  endmacro()
+endif()
+## Prefer the Qt signals and slots to avoid defining "emit", "slots",
+## etc because they can conflict with boost signals, so define QT_NO_KEYWORDS here.
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+add_definitions(-DQT_NO_KEYWORDS)
 
 include_directories(
   include
@@ -47,6 +73,25 @@ include_directories(
   ${Boost_INCLUDE_DIR}
   ${EIGEN_INCLUDE_DIRS}
 )
+
+###########
+## Build ##
+###########
+
+## specify which header files need to be run through "moc",
+## Qt's meta-object compiler.
+qt_wrap_cpp(MOC_FILES
+  src/tf_keyboard_cal_gui.h
+)
+
+## specify the list of source files, including the output of
+## the previous command which is stored in ``${MOC_FILES}``.
+set(SOURCE_FILES
+  src/tf_keyboard_cal_gui.cpp
+)
+
+add_library(${PROJECT_NAME}_gui ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME}_gui ${rviz_DEFAULT_PLUGIN_LIBRARIES} ${QT_LIBRARIES} ${catkin_LIBRARIES})
 
 # Library
 # add_library(${PROJECT_NAME}_manual_tf_alignment
@@ -122,3 +167,34 @@ roslint_cpp()
 #   launch
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
+
+#############
+## Install ##
+#############
+
+# Install libraries
+install(
+  TARGETS
+  ${PROJECT_NAME}_gui
+  LIBRARY DESTINATION
+  ${CATKIN_PACKAGE_LIB_DESTINATION}
+  )
+
+# Install header files
+install(DIRECTORY include/${PROJECT_NAME}/   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+
+# Install shared resources
+install(DIRECTORY launch    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(DIRECTORY resources DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+# Install xml plugin config
+install(FILES
+  plugin_description.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  )
+
+# Install executables
+install(TARGETS
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  )

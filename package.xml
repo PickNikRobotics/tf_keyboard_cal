@@ -18,6 +18,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <!-- <depend>keyboard</depend> -->
+  <depend>rviz</depend>
   <depend>rviz_visual_tools</depend>
   <depend>roscpp</depend>
   <depend>tf2</depend>
