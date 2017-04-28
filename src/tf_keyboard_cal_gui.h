@@ -40,32 +40,64 @@
 #include <rviz/panel.h>
 #endif
 
+#include <QTabWidget>
 #include <QPushButton>
-#include <QComboBox>
-
-class QLineEdit; // What are these for?
-class QSpinBox;
+#include <QLabel>
+#include <QLineEdit>
 
 namespace tf_keyboard_cal
 {
 
 class TFKeyboardCalGui : public rviz::Panel
 {
-  Q_OBJECT  
+  Q_OBJECT
 public:
-  TFKeyboardCalGui(QWidget *parent = 0);
+  explicit TFKeyboardCalGui(QWidget *parent = 0);
 
-  virtual void load(const rviz::Config &config);
-  virtual void save(rviz::Config config) const;
+private:
+  QTabWidget *tabWidget_;
 
-public Q_SLOTS:
+  
+};
+
+
+/**
+ * Tab for creating, saving, loading, removing and deleting TFs
+ */
+class createTFTab : public QWidget
+{
+  Q_OBJECT
+
+public:
+  explicit createTFTab(QWidget *parent = 0);
 
 protected Q_SLOTS:
+  void createNewTF();
+  void fromTextChanged(QString text);
+  void toTextChanged(QString text);
+  
+private:
+  std::string from_tf_name_;
+  std::string to_tf_name_;
+  
+  QLineEdit *from_;
+  QLineEdit *to_;
 
-  void testFnc();
+  QPushButton *create_tf_btn_;
+};
 
-protected:
-  QPushButton *btn_test_;
+
+
+
+/**
+ * Tab for manipulating TFs
+ */
+class manipulateTFTab : public QWidget
+{
+  Q_OBJECT
+
+public:
+  explicit manipulateTFTab(QWidget *parent = 0);
 };
 
 } // end namespace tf_keyboard_cal

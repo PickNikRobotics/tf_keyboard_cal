@@ -39,37 +39,76 @@
 
 #include "tf_keyboard_cal_gui.h"
 
-
 namespace tf_keyboard_cal
 {
 TFKeyboardCalGui::TFKeyboardCalGui(QWidget* parent) : rviz::Panel(parent)
 {
-  std::cout << "\033[1;36m" << "TFKeyboardCalGui" << "\033[0m" << std::endl;
-  // create a test button
-  btn_test_ = new QPushButton(this);
-  btn_test_->setText("Test");
-  connect(btn_test_, SIGNAL(clicked()), this, SLOT(testFnc()));
+  tabWidget_ = new QTabWidget;
+  tabWidget_->addTab(new createTFTab(), tr("Add / Remove"));
+  tabWidget_->addTab(new manipulateTFTab(), tr("Manipulate"));
 
-  // Vertical Layout
-  QVBoxLayout* layout = new QVBoxLayout;
-  layout->addWidget(btn_test_);
-  setLayout(layout);
-  std::cout << "\033[1;36m" << "end" << "\033[0m" << std::endl;
-}
-
-void TFKeyboardCalGui::testFnc()
-{
+  QVBoxLayout *main_layout = new QVBoxLayout;
+  main_layout->addWidget(tabWidget_);
+  setLayout(main_layout);
   
 }
 
-void TFKeyboardCalGui::save(rviz::Config config) const
+createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
 {
-  rviz::Panel::save(config);
+  QLabel *from_label = new QLabel(tr("from:"));
+  QLabel *to_label = new QLabel(tr("to:"));
+
+  from_ = new QLineEdit;
+  from_->setPlaceholderText("from TF");
+  connect(from_, SIGNAL(textChanged(const QString &)), this, SLOT(fromTextChanged(const QString &)));
+  
+  to_ = new QLineEdit;
+  to_->setPlaceholderText("to TF");
+  connect(to_, SIGNAL(textChanged(const QString &)), this, SLOT(toTextChanged(const QString &)));
+
+  create_tf_btn_ = new QPushButton(this);
+  create_tf_btn_->setText("Create TF");
+  connect(create_tf_btn_, SIGNAL(clicked()), this, SLOT(createNewTF()));
+  
+  QHBoxLayout *from_row = new QHBoxLayout;
+  from_row->addWidget(from_label);
+  from_row->addWidget(from_);
+
+  QHBoxLayout *to_row = new QHBoxLayout;
+  to_row->addWidget(to_label);
+  to_row->addWidget(to_);
+
+  QVBoxLayout *main_layout = new QVBoxLayout;
+  main_layout->addLayout(from_row);
+  main_layout->addLayout(to_row);
+  main_layout->addWidget(create_tf_btn_);
+  setLayout(main_layout);
 }
 
-void TFKeyboardCalGui::load(const rviz::Config& config)
+void createTFTab::createNewTF()
 {
-  rviz::Panel::load(config);
+  ROS_DEBUG_STREAM_NAMED("createNewTF","create new TF button pressed");
+}
+
+void createTFTab::fromTextChanged(QString text)
+{
+  from_tf_name_ = text.toStdString();
+  ROS_DEBUG_STREAM_NAMED("fromTextChanged","from: " << from_tf_name_); 
+}
+
+void createTFTab::toTextChanged(QString text)
+{
+  to_tf_name_ = text.toStdString();
+  ROS_DEBUG_STREAM_NAMED("toTextChanged","to: " << to_tf_name_);
+}
+
+manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
+{
+  QLabel *some_text = new QLabel(tr("Some Text"));
+
+  QVBoxLayout *main_layout = new QVBoxLayout;
+  main_layout->addWidget(some_text);
+  setLayout(main_layout);
 }
 
 } // end namespace tf_keyboard_cal
