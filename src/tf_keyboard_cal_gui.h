@@ -44,6 +44,8 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QLineEdit>
+#include <QComboBox>
+#include <QFrame>
 
 namespace tf_keyboard_cal
 {
@@ -55,11 +57,8 @@ public:
   explicit TFKeyboardCalGui(QWidget *parent = 0);
 
 private:
-  QTabWidget *tabWidget_;
-
-  
+  QTabWidget *tabWidget_;  
 };
-
 
 /**
  * Tab for creating, saving, loading, removing and deleting TFs
@@ -73,21 +72,23 @@ public:
 
 protected Q_SLOTS:
   void createNewTF();
+  void removeTF();
+
   void fromTextChanged(QString text);
   void toTextChanged(QString text);
   
 private:
   std::string from_tf_name_;
   std::string to_tf_name_;
-  
+
   QLineEdit *from_;
   QLineEdit *to_;
 
   QPushButton *create_tf_btn_;
+  QPushButton *remove_tf_btn_;
+
+  QComboBox *active_tfs_;
 };
-
-
-
 
 /**
  * Tab for manipulating TFs
@@ -98,6 +99,17 @@ class manipulateTFTab : public QWidget
 
 public:
   explicit manipulateTFTab(QWidget *parent = 0);
+};
+
+/**
+ * Tab for saving and loading TFs
+ */
+class saveLoadTFTab : public QWidget
+{
+  Q_OBJECT
+
+public:
+  explicit saveLoadTFTab(QWidget *parent = 0);
 };
 
 } // end namespace tf_keyboard_cal
