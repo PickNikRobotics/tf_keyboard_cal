@@ -46,6 +46,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QFrame>
+#include <QDoubleValidator>
 
 namespace tf_keyboard_cal
 {
@@ -81,7 +82,7 @@ private:
   std::string from_tf_name_;
   std::string to_tf_name_;
 
-  QLineEdit *from_;
+  QComboBox *from_;
   QLineEdit *to_;
 
   QPushButton *create_tf_btn_;
@@ -99,6 +100,31 @@ class manipulateTFTab : public QWidget
 
 public:
   explicit manipulateTFTab(QWidget *parent = 0);
+
+protected Q_SLOTS:
+  void incrementDOF();
+  void setXYZDelta(QString text);
+  void setRPYDelta(QString text);
+  
+private:
+
+  static constexpr double MAX_XYZ_DELTA = 10.0;
+  static constexpr double MAX_RPY_DELTA = 180.0;
+  
+  double x_;
+  double y_;
+  double z_;
+  double roll_;
+  double pitch_;
+  double yaw_;
+  double xyz_delta_;
+  double rpy_delta_;
+
+  QComboBox *tf_;
+
+  QLineEdit *xyz_delta_box_;
+  QLineEdit *rpy_delta_box_;
+  
 };
 
 /**

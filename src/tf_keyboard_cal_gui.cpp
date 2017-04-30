@@ -61,9 +61,10 @@ createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
   QLabel *from_label = new QLabel(tr("from:"));
   QLabel *to_label = new QLabel(tr("to:"));
   
-  from_ = new QLineEdit;
-  from_->setPlaceholderText("from TF");
-  connect(from_, SIGNAL(textChanged(const QString &)), this, SLOT(fromTextChanged(const QString &)));
+  from_ = new QComboBox;
+  from_->setEditable(true);
+  from_->addItem(tr("Select existing or add new TF"));
+  connect(from_, SIGNAL(editTextChanged(const QString &)), this, SLOT(fromTextChanged(const QString &)));
   
   to_ = new QLineEdit;
   to_->setPlaceholderText("to TF");
@@ -139,11 +140,75 @@ void createTFTab::toTextChanged(QString text)
 
 manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
 {
-  QLabel *some_text = new QLabel(tr("Some Text"));
+  QLabel *tf_label = new QLabel(tr("tf:"));
+  tf_ = new QComboBox;
+  tf_->addItem(tr("Select TF"));
+
+  QLabel *xyz_delta_label = new QLabel(tr("xyz delta (m):"));
+  xyz_delta_box_ = new QLineEdit;
+  xyz_delta_box_->setText("0.1");
+  connect(xyz_delta_box_, SIGNAL(textChanged(const QString &)), this, SLOT(setXYZDelta(const QString &)));
+
+  QLabel *rpy_delta_label = new QLabel(tr("rpy delta (deg):"));
+  rpy_delta_box_ = new QLineEdit;
+  rpy_delta_box_->setText("5.0");
+  connect(rpy_delta_box_, SIGNAL(textChanged(const QString &)), this, SLOT(setRPYDelta(const QString &)));
+
+  QGroupBox *tf_ctrl_section = new QGroupBox(tr("Manipulation Data"));
+
+  QHBoxLayout *tf_row = new QHBoxLayout;
+  tf_row->addWidget(tf_label);
+  tf_row->addWidget(tf_);
+
+  QHBoxLayout *xyz_delta_row = new QHBoxLayout;
+  xyz_delta_row->addWidget(xyz_delta_label);
+  xyz_delta_row->addWidget(xyz_delta_box_);
+
+  QHBoxLayout *rpy_delta_row = new QHBoxLayout;
+  rpy_delta_row->addWidget(rpy_delta_label);
+  rpy_delta_row->addWidget(rpy_delta_box_);
+  
+  QVBoxLayout *tf_controls = new QVBoxLayout;
+  tf_controls->addLayout(tf_row);
+  tf_controls->addLayout(xyz_delta_row);
+  tf_controls->addLayout(rpy_delta_row);
+  tf_ctrl_section->setLayout(tf_controls);
 
   QVBoxLayout *main_layout = new QVBoxLayout;
-  main_layout->addWidget(some_text);
+  main_layout->addWidget(tf_ctrl_section);
   setLayout(main_layout);
+}
+
+void manipulateTFTab::setXYZDelta(QString text)
+{
+  xyz_delta_ = text.toDouble();
+  ROS_DEBUG_STREAM_NAMED("set_xyz_delta","text = " << text.toStdString() << ", value = " << xyz_delta_);  
+
+  if (std::abs(xyz_delta_) > MAX_XYZ_DELTA)
+  {
+    ROS_WARN_STREAM_NAMED("setXYZDelta","Tried to set XYZ delta outside of limits. (+/-" << MAX_XYZ_DELTA << ")");
+    xyz_delta_ > 0 ? xyz_delta_ = MAX_XYZ_DELTA : xyz_delta_ = -1.0 * MAX_XYZ_DELTA;
+    QString value = QString::number(xyz_delta_);
+    xyz_delta_box_->setText(value);
+  }
+  
+  ROS_DEBUG_STREAM_NAMED("set_xyz_delta","setting xyz_delta_ = " << xyz_delta_);
+}
+
+void manipulateTFTab::setRPYDelta(QString text)
+{
+  rpy_delta_ = text.toDouble();
+  ROS_DEBUG_STREAM_NAMED("set_rpy_delta","text = " << text.toStdString() << ", value = " << rpy_delta_);
+
+  if (std::abs(rpy_delta_) > MAX_RPY_DELTA)
+  {
+    ROS_WARN_STREAM_NAMED("setRPYDelta","Tried to set RPY delta outside of limits. (+/-" << MAX_RPY_DELTA << ")");
+    rpy_delta_ > 0 ? rpy_delta_ = MAX_RPY_DELTA : rpy_delta_ = -1.0 * MAX_RPY_DELTA;
+    QString value = QString::number(rpy_delta_);
+    rpy_delta_box_->setText(value);
+  }
+  
+  ROS_DEBUG_STREAM_NAMED("set_rpy_delta","setting rpy_delta_ = " << rpy_delta_);
 }
 
 saveLoadTFTab::saveLoadTFTab(QWidget *parent) : QWidget(parent)
