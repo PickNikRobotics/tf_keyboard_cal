@@ -140,6 +140,10 @@ void createTFTab::toTextChanged(QString text)
 
 manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
 {
+
+  xyz_delta_ = 0.1;
+  rpy_delta_ = 1.0;
+  
   QLabel *tf_label = new QLabel(tr("tf:"));
   tf_ = new QComboBox;
   tf_->addItem(tr("Select TF"));
@@ -174,9 +178,78 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
   tf_controls->addLayout(rpy_delta_row);
   tf_ctrl_section->setLayout(tf_controls);
 
+  // Set up xyr rpy increment controls
+  QGroupBox *tf_increment_section = new QGroupBox(tr("Increment TF"));
+  QVBoxLayout *tf_increment_controls = new QVBoxLayout;
+  
+  std::vector<std::string> labels = { "x (m):", "y (m):", "z (m):", "r (deg):", "p (deg):", "y (deg):"};
+  for (std::size_t i = 0; i < labels.size(); i++)
+  {
+    dof_values_.push_back(0.0);
+    
+    QLabel *label = new QLabel(tr(labels[i].c_str()));
+    
+    QPushButton *minus = new QPushButton;
+    minus->setText("-");
+    minus->setProperty("sign", -1.0);
+    minus->setProperty("dof", (int)i);
+    connect(minus, SIGNAL(clicked()), this, SLOT(incrementDOF()));
+    
+    QLineEdit *value = new QLineEdit;
+    value->setText("0.0");
+    value->setProperty("dof", (int)i);
+    dof_box_values_.push_back(value);
+    connect(dof_box_values_[i], SIGNAL(textChanged(const QString &)), this, SLOT(setIncrementValue(const QString &)));
+
+    QPushButton *plus = new QPushButton;
+    plus->setText("+");
+    plus->setProperty("sign", 1.0);
+    plus->setProperty("dof", (int)i);    
+    connect(plus, SIGNAL(clicked()), this, SLOT(incrementDOF()));
+
+    QHBoxLayout *row = new QHBoxLayout;
+    row->addWidget(label);
+    row->addWidget(minus);
+    row->addWidget(value);
+    row->addWidget(plus);
+    tf_increment_controls->addLayout(row);
+  }
+
+  tf_increment_section->setLayout(tf_increment_controls);
+
+  // set main layout
   QVBoxLayout *main_layout = new QVBoxLayout;
   main_layout->addWidget(tf_ctrl_section);
+  main_layout->addWidget(tf_increment_section);
   setLayout(main_layout);
+  
+}
+
+void manipulateTFTab::setIncrementValue(QString text)
+{
+  double value = text.toDouble();
+  int dof = (sender()->property("dof")).toInt();
+  
+  dof_values_[dof] = value;
+  dof_box_values_[dof]->setText(QString::number(dof_values_[dof]));
+  
+  ROS_DEBUG_STREAM_NAMED("setIncrementValue","text = " << text.toStdString() <<
+                         ", value = " << value << ", dof = " << dof);
+}
+
+void manipulateTFTab::incrementDOF()
+{
+  int dof = (sender()->property("dof")).toInt();
+  double sign = (sender()->property("sign")).toDouble();
+  
+  if (dof == 0 || dof == 1 || dof == 2)
+    dof_values_[dof] += (double)sign * xyz_delta_;
+  else
+    dof_values_[dof] += (double)sign * rpy_delta_;
+
+  dof_box_values_[dof]->setText(QString::number(dof_values_[dof]));
+  
+  ROS_DEBUG_STREAM_NAMED("incrementDOF","dof = " << dof << ", sign = " << sign);
 }
 
 void manipulateTFTab::setXYZDelta(QString text)

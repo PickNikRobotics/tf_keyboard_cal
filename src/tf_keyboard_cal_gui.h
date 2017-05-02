@@ -103,20 +103,17 @@ public:
 
 protected Q_SLOTS:
   void incrementDOF();
+  void setIncrementValue(QString text);
+  
   void setXYZDelta(QString text);
   void setRPYDelta(QString text);
   
 private:
 
-  static constexpr double MAX_XYZ_DELTA = 10.0;
-  static constexpr double MAX_RPY_DELTA = 180.0;
-  
-  double x_;
-  double y_;
-  double z_;
-  double roll_;
-  double pitch_;
-  double yaw_;
+  static constexpr double MAX_XYZ_DELTA = 100.0;
+  static constexpr double MAX_RPY_DELTA = 360.0;
+
+  std::vector<double> dof_values_;
   double xyz_delta_;
   double rpy_delta_;
 
@@ -124,6 +121,8 @@ private:
 
   QLineEdit *xyz_delta_box_;
   QLineEdit *rpy_delta_box_;
+
+  std::vector<QLineEdit*> dof_box_values_;
   
 };
 
