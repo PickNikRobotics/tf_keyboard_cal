@@ -47,6 +47,7 @@
 #include <QComboBox>
 #include <QFrame>
 #include <QDoubleValidator>
+#include <QDir>
 
 namespace tf_keyboard_cal
 {
@@ -135,6 +136,17 @@ class saveLoadTFTab : public QWidget
 
 public:
   explicit saveLoadTFTab(QWidget *parent = 0);
+
+protected Q_SLOTS:
+  void load();
+  void save();
+
+private:
+  QPushButton *load_btn_;
+  QPushButton *save_btn_;
+  
+  std::string full_save_path_;
+  std::string full_load_path_;
 };
 
 } // end namespace tf_keyboard_cal

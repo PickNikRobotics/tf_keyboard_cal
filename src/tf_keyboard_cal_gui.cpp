@@ -37,6 +37,8 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
+#include <QFileDialog>
+#include <QGridLayout>
 
 #include "tf_keyboard_cal_gui.h"
 
@@ -180,7 +182,7 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
 
   // Set up xyr rpy increment controls
   QGroupBox *tf_increment_section = new QGroupBox(tr("Increment TF"));
-  QVBoxLayout *tf_increment_controls = new QVBoxLayout;
+  QGridLayout *grid_layout = new QGridLayout();
   
   std::vector<std::string> labels = { "x (m):", "y (m):", "z (m):", "r (deg):", "p (deg):", "y (deg):"};
   for (std::size_t i = 0; i < labels.size(); i++)
@@ -207,15 +209,13 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
     plus->setProperty("dof", (int)i);    
     connect(plus, SIGNAL(clicked()), this, SLOT(incrementDOF()));
 
-    QHBoxLayout *row = new QHBoxLayout;
-    row->addWidget(label);
-    row->addWidget(minus);
-    row->addWidget(value);
-    row->addWidget(plus);
-    tf_increment_controls->addLayout(row);
+    grid_layout->addWidget(label, i, 1);
+    grid_layout->addWidget(minus, i, 2);
+    grid_layout->addWidget(value, i, 3);
+    grid_layout->addWidget(plus, i, 4);
   }
 
-  tf_increment_section->setLayout(tf_increment_controls);
+  tf_increment_section->setLayout(grid_layout);
 
   // set main layout
   QVBoxLayout *main_layout = new QVBoxLayout;
@@ -286,11 +286,51 @@ void manipulateTFTab::setRPYDelta(QString text)
 
 saveLoadTFTab::saveLoadTFTab(QWidget *parent) : QWidget(parent)
 {
-  QLabel *some_text = new QLabel(tr("Some Text"));
+  load_btn_ = new QPushButton(tr("Load TFs from File"), this);
+  connect(load_btn_ , SIGNAL(clicked()), this, SLOT(load()));
+
+  save_btn_ = new QPushButton(tr("Save TFs to File"), this);
+  connect(save_btn_ , SIGNAL(clicked()), this, SLOT(save()));
+
+  QGroupBox *file_section = new QGroupBox(tr("Save/Load TF Files"));
+  
+  QVBoxLayout *file_layout = new QVBoxLayout;
+  file_layout->addWidget(load_btn_);
+  file_layout->addWidget(save_btn_);
+
+  file_section->setLayout(file_layout);
 
   QVBoxLayout *main_layout = new QVBoxLayout;
-  main_layout->addWidget(some_text);
+  main_layout->addWidget(file_section);
   setLayout(main_layout);
+}
+
+void saveLoadTFTab::load()
+{
+  QString filters("YAML files (*.yaml);;All files (*.*)");
+  QString default_filter("YAML files (*.yaml)");
+  
+  QString directory =
+    QFileDialog::getOpenFileName(0, "Load TF File", QDir::currentPath(), filters, &default_filter);
+
+  full_load_path_ = directory.toStdString();
+  ROS_DEBUG_STREAM_NAMED("load","load_file = " << full_load_path_);
+}
+
+void saveLoadTFTab::save()
+{
+  QString filters("YAML files (*.yaml);;All files (*.*)");
+  QString default_filter("YAML files (*.yaml)");
+  
+  QString directory =
+    QFileDialog::getSaveFileName(0, "Save TF File", QDir::currentPath(), filters, &default_filter);
+
+
+  full_save_path_ = directory.toStdString();
+
+  // TODO: check for file extension and automatically append if left off
+  
+  ROS_DEBUG_STREAM_NAMED("load","save_file = " << full_save_path_);
 }
 
 } // end namespace tf_keyboard_cal
