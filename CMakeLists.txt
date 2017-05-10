@@ -90,8 +90,12 @@ set(SOURCE_FILES
   src/tf_keyboard_cal_gui.cpp
 )
 
+add_library(${PROJECT_NAME}_receiver src/tf_remote_receiver.cpp)
+target_link_libraries(${PROJECT_NAME}_receiver ${catkin_LIBRARIES})
+
 add_library(${PROJECT_NAME}_gui ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME}_gui ${rviz_DEFAULT_PLUGIN_LIBRARIES} ${QT_LIBRARIES} ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_gui ${PROJECT_NAME}_receiver ${rviz_DEFAULT_PLUGIN_LIBRARIES} ${QT_LIBRARIES} ${catkin_LIBRARIES})
+
 
 # Library
 # add_library(${PROJECT_NAME}_manual_tf_alignment

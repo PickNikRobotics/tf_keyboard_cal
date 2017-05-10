@@ -40,7 +40,7 @@
 #include <QFileDialog>
 #include <QGridLayout>
 
-#include "tf_keyboard_cal_gui.h"
+#include <tf_keyboard_cal/tf_keyboard_cal_gui.h>
 
 namespace tf_keyboard_cal
 {
@@ -114,18 +114,23 @@ createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
   main_layout->addWidget(add_section);
   main_layout->addWidget(remove_section);
   setLayout(main_layout);
+
+  remote_receiver_ = &TFRemoteReceiver::getInstance();
 }
 
 void createTFTab::createNewTF()
 {
   ROS_DEBUG_STREAM_NAMED("createNewTF","create new TF button pressed.");
   ROS_DEBUG_STREAM_NAMED("createNewTF","from:to = " << from_tf_name_ << ":" << to_tf_name_);
+  //TFRemoteReceiver::getInstance().createTF();
+  remote_receiver_->createTF();
 }
 
 void createTFTab::removeTF()
 {
   std::string tf_id = active_tfs_->currentText().toStdString();
   ROS_DEBUG_STREAM_NAMED("removeTF","remove TF: " << active_tfs_->currentIndex() << ", " << tf_id);
+  remote_receiver_->removeTF();
 }
 
 void createTFTab::fromTextChanged(QString text)
@@ -222,6 +227,8 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
   main_layout->addWidget(tf_ctrl_section);
   main_layout->addWidget(tf_increment_section);
   setLayout(main_layout);
+
+  remote_receiver_ = &TFRemoteReceiver::getInstance();
   
 }
 
@@ -250,6 +257,7 @@ void manipulateTFTab::incrementDOF()
   dof_box_values_[dof]->setText(QString::number(dof_values_[dof]));
   
   ROS_DEBUG_STREAM_NAMED("incrementDOF","dof = " << dof << ", sign = " << sign);
+  remote_receiver_->updateTF();
 }
 
 void manipulateTFTab::setXYZDelta(QString text)
@@ -303,6 +311,7 @@ saveLoadTFTab::saveLoadTFTab(QWidget *parent) : QWidget(parent)
   QVBoxLayout *main_layout = new QVBoxLayout;
   main_layout->addWidget(file_section);
   setLayout(main_layout);
+
 }
 
 void saveLoadTFTab::load()

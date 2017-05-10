@@ -40,6 +40,8 @@
 #include <rviz/panel.h>
 #endif
 
+#include <tf_keyboard_cal/tf_remote_receiver.h>
+
 #include <QTabWidget>
 #include <QPushButton>
 #include <QLabel>
@@ -57,9 +59,11 @@ class TFKeyboardCalGui : public rviz::Panel
   Q_OBJECT
 public:
   explicit TFKeyboardCalGui(QWidget *parent = 0);
-
+  
 private:
-  QTabWidget *tabWidget_;  
+  QTabWidget *tabWidget_;
+
+
 };
 
 /**
@@ -90,6 +94,8 @@ private:
   QPushButton *remove_tf_btn_;
 
   QComboBox *active_tfs_;
+
+  TFRemoteReceiver *remote_receiver_;
 };
 
 /**
@@ -124,7 +130,8 @@ private:
   QLineEdit *rpy_delta_box_;
 
   std::vector<QLineEdit*> dof_box_values_;
-  
+
+  TFRemoteReceiver *remote_receiver_;
 };
 
 /**
