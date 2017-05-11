@@ -16,6 +16,8 @@ find_package(catkin REQUIRED COMPONENTS
   tf_conversions
   interactive_markers
   rviz
+  std_msgs
+  geometry_msgs
 )
 
 find_package(Eigen REQUIRED)
@@ -29,8 +31,9 @@ catkin_package(
 #    ${PROJECT_NAME}_manual_tf_alignment
 #    ${PROJECT_NAME}_imarker_simple
   CATKIN_DEPENDS
-#  keyboard
-  roscpp
+  #  keyboard
+    message_runtime
+    roscpp
     tf2
     tf
     rosparam_shortcuts

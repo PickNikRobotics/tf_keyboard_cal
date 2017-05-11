@@ -36,6 +36,9 @@
 
 #include <ros/ros.h>
 
+#include <Eigen/Core>
+
+
 namespace tf_keyboard_cal
 {
 
@@ -55,6 +58,15 @@ public:
   
 private:
   TFRemoteReceiver();
+
+  Eigen::Vector3d translation_;
+  Eigen::Vector3d rotation_;
+  std::string from_;
+  std::string to_;
+
+  ros::NodeHandle nh_;
+  ros::Publisher create_tf_pub_;
+  ros::Publisher remove_tf_pub_;  
   
 }; // end class TFRemoteReceiver
 

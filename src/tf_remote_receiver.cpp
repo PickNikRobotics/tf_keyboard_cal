@@ -33,17 +33,43 @@
 
 #include <tf_keyboard_cal/tf_remote_receiver.h>
 
+#include <tf/transform_broadcaster.h>
+
 namespace tf_keyboard_cal
 {
 
 TFRemoteReceiver::TFRemoteReceiver()
+  : nh_("~")
 {
   std::cout << "\033[1;36m" << "remote receiver initialized" << "\033[0m" << std::endl;
+  translation_[0] = 1.0;
+  translation_[1] = 1.0;
+  translation_[2] = 1.0;
+
+  rotation_[0] = 0.7;
+  rotation_[1] = 0.7;
+  rotation_[2] = 0.7;
+
+  from_ = "world";
+  to_ = "robot";
+
+  create_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("create_rviz_tf", 10);
+  remove_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("remove_rviz_tf", 10);
+  
 }
 
 void TFRemoteReceiver::createTF()
 {
   std::cout << "\033[1;36m" << "create tf" << "\033[0m" << std::endl;
+  
+  geometry_msgs::TransformStamped new_tf_msg;
+  unsigned long int id = 1;
+  new_tf_msg.header.seq = id;
+  new_tf_msg.header.frame_id = from_;
+  new_tf_msg.child_frame_id = to_;
+
+  create_tf_pub_.publish(new_tf_msg);
+
 }
 
 void TFRemoteReceiver::removeTF()

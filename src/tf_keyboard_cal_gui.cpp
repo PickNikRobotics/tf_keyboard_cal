@@ -40,7 +40,8 @@
 #include <QFileDialog>
 #include <QGridLayout>
 
-#include <tf_keyboard_cal/tf_keyboard_cal_gui.h>
+// TODO: Why doesn't example put this in the include dir?
+#include "tf_keyboard_cal_gui.h"
 
 namespace tf_keyboard_cal
 {
@@ -53,7 +54,7 @@ TFKeyboardCalGui::TFKeyboardCalGui(QWidget* parent) : rviz::Panel(parent)
 
   QVBoxLayout *main_layout = new QVBoxLayout;
   main_layout->addWidget(tabWidget_);
-  setLayout(main_layout);  
+  setLayout(main_layout);
 }
 
 createTFTab::createTFTab(QWidget *parent) : QWidget(parent)

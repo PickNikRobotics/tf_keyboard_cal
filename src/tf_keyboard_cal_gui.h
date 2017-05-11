@@ -59,11 +59,11 @@ class TFKeyboardCalGui : public rviz::Panel
   Q_OBJECT
 public:
   explicit TFKeyboardCalGui(QWidget *parent = 0);
+
+  void publishTFs();
   
 private:
   QTabWidget *tabWidget_;
-
-
 };
 
 /**
