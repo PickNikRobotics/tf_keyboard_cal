@@ -35,7 +35,7 @@
 #define TF_REMOTE_RECEIVER_H
 
 #include <ros/ros.h>
-
+#include <geometry_msgs/TransformStamped.h>
 #include <Eigen/Core>
 
 
@@ -52,17 +52,12 @@ public:
     return instance;
   }
   
-  void createTF();
+  void createTF(std::size_t id, std::string from, std::string to);
   void removeTF();
   void updateTF();
   
 private:
   TFRemoteReceiver();
-
-  Eigen::Vector3d translation_;
-  Eigen::Vector3d rotation_;
-  std::string from_;
-  std::string to_;
 
   ros::NodeHandle nh_;
   ros::Publisher create_tf_pub_;

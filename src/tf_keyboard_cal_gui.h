@@ -64,6 +64,7 @@ public:
   
 private:
   QTabWidget *tabWidget_;
+  QComboBox *active_tfs_;
 };
 
 /**
@@ -72,9 +73,10 @@ private:
 class createTFTab : public QWidget
 {
   Q_OBJECT
-
+  
 public:
   explicit createTFTab(QWidget *parent = 0);
+  void setActiveTFComboBox();
 
 protected Q_SLOTS:
   void createNewTF();
@@ -84,9 +86,21 @@ protected Q_SLOTS:
   void toTextChanged(QString text);
   
 private:
+
+  struct tf_data{
+    std::size_t id_;
+    std::string from_;
+    std::string to_;
+    QString name_;
+  };
+
+  std::vector< tf_data > active_tf_list_;
+  
   std::string from_tf_name_;
   std::string to_tf_name_;
 
+  std::size_t id_;
+  
   QComboBox *from_;
   QLineEdit *to_;
 

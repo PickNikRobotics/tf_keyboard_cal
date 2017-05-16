@@ -48,13 +48,21 @@ namespace tf_keyboard_cal
 TFKeyboardCalGui::TFKeyboardCalGui(QWidget* parent) : rviz::Panel(parent)
 {
   tabWidget_ = new QTabWidget;
-  tabWidget_->addTab(new createTFTab(), tr("Add / Remove"));
+  createTFTab *new_create_tab = new createTFTab();
+  new_create_tab->setActiveTFComboBox();
+  tabWidget_->addTab(new_create_tab, tr("Add / Remove"));
+  // tabWidget_->addTab(new createTFTab(), tr("Add / Remove"));
   tabWidget_->addTab(new manipulateTFTab(), tr("Manipulate"));
   tabWidget_->addTab(new saveLoadTFTab(), tr("Save / Load"));
 
   QVBoxLayout *main_layout = new QVBoxLayout;
   main_layout->addWidget(tabWidget_);
   setLayout(main_layout);
+}
+
+void createTFTab::setActiveTFComboBox()
+{
+  ROS_DEBUG_STREAM_NAMED("setActiveTFComboBox","test");
 }
 
 createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
@@ -116,6 +124,8 @@ createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
   main_layout->addWidget(remove_section);
   setLayout(main_layout);
 
+  id_ = 0;
+  
   remote_receiver_ = &TFRemoteReceiver::getInstance();
 }
 
@@ -123,14 +133,45 @@ void createTFTab::createNewTF()
 {
   ROS_DEBUG_STREAM_NAMED("createNewTF","create new TF button pressed.");
   ROS_DEBUG_STREAM_NAMED("createNewTF","from:to = " << from_tf_name_ << ":" << to_tf_name_);
-  //TFRemoteReceiver::getInstance().createTF();
-  remote_receiver_->createTF();
+
+  tf_data new_tf;
+  new_tf.id_ = id_++;
+  new_tf.from_ = from_tf_name_;
+  new_tf.to_ = to_tf_name_;
+  std::string text = std::to_string(new_tf.id_) + ": " + new_tf.from_ + "-" + new_tf.to_;
+  new_tf.name_ = QString::fromStdString(text);
+  
+  active_tf_list_.push_back(new_tf);
+  
+  active_tfs_->clear();
+  for (std::size_t i = 0; i < active_tf_list_.size(); i++)
+  {
+    active_tfs_->addItem(active_tf_list_[i].name_);
+  }
+  
+  remote_receiver_->createTF(new_tf.id_, new_tf.from_, new_tf.to_);
 }
 
 void createTFTab::removeTF()
 {
   std::string tf_id = active_tfs_->currentText().toStdString();
   ROS_DEBUG_STREAM_NAMED("removeTF","remove TF: " << active_tfs_->currentIndex() << ", " << tf_id);
+  for (std::size_t i = 0; i < active_tf_list_.size(); i++)
+  {
+    if (active_tf_list_[i].name_ == active_tfs_->currentText())
+    {
+      ROS_DEBUG_STREAM_NAMED("removeTF","remove index = " << i);
+      active_tf_list_.erase(active_tf_list_.begin() + i);
+      break;
+    }
+  }
+
+  active_tfs_->clear();
+  for (std::size_t i = 0; i < active_tf_list_.size(); i++)
+  {
+    active_tfs_->addItem(active_tf_list_[i].name_);
+  }
+  
   remote_receiver_->removeTF();
 }
 
