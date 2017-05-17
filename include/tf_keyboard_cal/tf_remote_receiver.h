@@ -53,7 +53,7 @@ public:
     return instance;
   }
   
-  void createTF(std::size_t id, std::string from, std::string to);
+  void createTF(geometry_msgs::TransformStamped new_tf_msg);
   void removeTF();
   void updateTF();
   

@@ -58,6 +58,7 @@ struct tf_data{
   std::string from_;
   std::string to_;
   QString name_;
+  double values_[6];
 };
 
 /**
@@ -107,7 +108,7 @@ public:
                      
 protected Q_SLOTS:
   void incrementDOF();
-  void setIncrementValue(QString text);
+  void updateTFValues(QString text);
   
   void setXYZDelta(QString text);
   void setRPYDelta(QString text);

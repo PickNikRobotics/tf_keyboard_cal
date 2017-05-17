@@ -48,19 +48,11 @@ TFRemoteReceiver::TFRemoteReceiver()
 
 void TFRemoteReceiver::tf_callback(const tf2_msgs::TFMessage &msg)
 {
-  ROS_DEBUG_STREAM_THROTTLE_NAMED(1, "tf_callback", "tf callback..." << msg.transforms.size());
-  
+  // get names of published tfs
 }
 
-void TFRemoteReceiver::createTF(std::size_t id, std::string from, std::string to)
+void TFRemoteReceiver::createTF(geometry_msgs::TransformStamped new_tf_msg)
 {
-  std::cout << "\033[1;36m" << "create tf" << "\033[0m" << std::endl;
-  ROS_DEBUG_STREAM_NAMED("createTF","from: " << from << ", to: " << to);
-  geometry_msgs::TransformStamped new_tf_msg;
-  new_tf_msg.header.seq = id;
-  new_tf_msg.header.frame_id = from;
-  new_tf_msg.child_frame_id = to;
-
   create_tf_pub_.publish(new_tf_msg);
 }
 

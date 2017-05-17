@@ -139,22 +139,32 @@ void createTFTab::createNewTF()
   ROS_DEBUG_STREAM_NAMED("createNewTF","create new TF button pressed.");
   ROS_DEBUG_STREAM_NAMED("createNewTF","from:to = " << from_tf_name_ << ":" << to_tf_name_);
 
+  // create new tf
   tf_data new_tf;
   new_tf.id_ = id_++;
   new_tf.from_ = from_tf_name_;
   new_tf.to_ = to_tf_name_;
+  for (std::size_t i = 0; i < 6; i++)
+  {
+    new_tf.values_[i] = 0.0;
+  }
   std::string text = std::to_string(new_tf.id_) + ": " + new_tf.from_ + "-" + new_tf.to_;
   new_tf.name_ = QString::fromStdString(text);
-  
   active_tf_list_.push_back(new_tf);
-  
+
+  // repopulate dropdown box
   active_tfs_->clear();
   for (std::size_t i = 0; i < active_tf_list_.size(); i++)
   {
     active_tfs_->addItem(active_tf_list_[i].name_);
   }
 
-  remote_receiver_->createTF(new_tf.id_, new_tf.from_, new_tf.to_);
+  // publish new tf
+  geometry_msgs::TransformStamped new_tf_msg;
+  new_tf_msg.header.seq = new_tf.id_;
+  new_tf_msg.header.frame_id = new_tf.from_;
+  new_tf_msg.child_frame_id = new_tf.to_;  
+  remote_receiver_->createTF(new_tf_msg);
 }
 
 void createTFTab::removeTF()
@@ -251,7 +261,7 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
     value->setText("0.0");
     value->setProperty("dof", (int)i);
     dof_box_values_.push_back(value);
-    connect(dof_box_values_[i], SIGNAL(textEdited(const QString &)), this, SLOT(setIncrementValue(const QString &)));
+    connect(dof_box_values_[i], SIGNAL(textEdited(const QString &)), this, SLOT(updateTFValues(const QString &)));
 
     QPushButton *plus = new QPushButton;
     plus->setText("+");
@@ -286,15 +296,32 @@ void manipulateTFTab::updateTFList()
   }
 }
 
-void manipulateTFTab::setIncrementValue(QString text)
+void manipulateTFTab::updateTFValues(QString text)
 {
   double value = text.toDouble();
   int dof = (sender()->property("dof")).toInt();
   
   dof_values_[dof] = value;
   
-  ROS_DEBUG_STREAM_NAMED("setIncrementValue","text = " << text.toStdString() <<
+  ROS_DEBUG_STREAM_NAMED("updateTFValues","text = " << text.toStdString() <<
                          ", value = " << value << ", dof = " << dof);
+
+  std::string tf_id = active_tfs_->currentText().toStdString();
+  for (std::size_t i = 0; i < active_tf_list_.size(); i++)
+  {
+    if (active_tf_list_[i].name_ == active_tfs_->currentText())
+    {
+      active_tf_list_[i].values_[dof] = value;
+      
+      ROS_DEBUG_STREAM_NAMED("updateTFValues","tf index = " << i);
+      for (std::size_t j = 0; j < 6; j++)
+      {
+        std::cout << active_tf_list_[i].values_[j] << std::endl;
+      }
+      break;
+    }
+  }
+  
 }
 
 void manipulateTFTab::incrementDOF()
