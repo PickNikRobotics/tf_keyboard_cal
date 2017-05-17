@@ -41,8 +41,15 @@ TFRemoteReceiver::TFRemoteReceiver()
 {
   std::cout << "\033[1;36m" << "remote receiver initialized" << "\033[0m" << std::endl;
 
-  create_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("create_rviz_tf", 10);
-  remove_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("remove_rviz_tf", 10);
+  create_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("/create_rviz_tf", 10);
+  remove_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("/remove_rviz_tf", 10);
+  tf_sub_ = nh_.subscribe("/tf", 1, &TFRemoteReceiver::tf_callback, this);
+}
+
+void TFRemoteReceiver::tf_callback(const tf2_msgs::TFMessage &msg)
+{
+  ROS_DEBUG_STREAM_THROTTLE_NAMED(1, "tf_callback", "tf callback..." << msg.transforms.size());
+  
 }
 
 void TFRemoteReceiver::createTF(std::size_t id, std::string from, std::string to)

@@ -7,6 +7,7 @@ set(CMAKE_CXX_FLAGS "-std=c++11 -Wall ${CMAKE_CXX_FLAGS}")
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   tf2
+  tf2_msgs
   tf
   roslib
   roslint

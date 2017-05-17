@@ -45,24 +45,29 @@
 
 namespace tf_keyboard_cal
 {
+
+std::vector< tf_data > active_tf_list_;
+
 TFKeyboardCalGui::TFKeyboardCalGui(QWidget* parent) : rviz::Panel(parent)
-{
-  tabWidget_ = new QTabWidget;
-  createTFTab *new_create_tab = new createTFTab();
-  new_create_tab->setActiveTFComboBox();
-  tabWidget_->addTab(new_create_tab, tr("Add / Remove"));
-  // tabWidget_->addTab(new createTFTab(), tr("Add / Remove"));
-  tabWidget_->addTab(new manipulateTFTab(), tr("Manipulate"));
-  tabWidget_->addTab(new saveLoadTFTab(), tr("Save / Load"));
+{ 
+  tab_widget_ = new QTabWidget;
+  tab_widget_->addTab(new createTFTab(), tr("Add / Remove"));
+
+  new_manipulate_tab_ = new manipulateTFTab();
+  connect(tab_widget_, SIGNAL(tabBarClicked(int)), this, SLOT(updateTFList()));
+  tab_widget_->addTab(new_manipulate_tab_, tr("Manipulate"));
+  // tab_widget_->addTab(new manipulateTFTab(), tr("Manipulate"));
+  
+  tab_widget_->addTab(new saveLoadTFTab(), tr("Save / Load"));
 
   QVBoxLayout *main_layout = new QVBoxLayout;
-  main_layout->addWidget(tabWidget_);
+  main_layout->addWidget(tab_widget_);
   setLayout(main_layout);
 }
 
-void createTFTab::setActiveTFComboBox()
+void TFKeyboardCalGui::updateTFList()
 {
-  ROS_DEBUG_STREAM_NAMED("setActiveTFComboBox","test");
+  new_manipulate_tab_->updateTFList();
 }
 
 createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
@@ -91,7 +96,7 @@ createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
 
   active_tfs_ = new QComboBox;
   active_tfs_->addItem(tr("Select TF to delete"));
-
+  
   // Layout
   QGroupBox *add_section = new QGroupBox(tr("Add TF"));
 
@@ -148,7 +153,7 @@ void createTFTab::createNewTF()
   {
     active_tfs_->addItem(active_tf_list_[i].name_);
   }
-  
+
   remote_receiver_->createTF(new_tf.id_, new_tf.from_, new_tf.to_);
 }
 
@@ -188,30 +193,28 @@ void createTFTab::toTextChanged(QString text)
 }
 
 manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
-{
-
-  xyz_delta_ = 0.1;
-  rpy_delta_ = 1.0;
-  
+{ 
   QLabel *tf_label = new QLabel(tr("tf:"));
-  tf_ = new QComboBox;
-  tf_->addItem(tr("Select TF"));
+  active_tfs_ = new QComboBox;
+  active_tfs_->addItem(tr("Select TF"));
 
   QLabel *xyz_delta_label = new QLabel(tr("xyz delta (m):"));
   xyz_delta_box_ = new QLineEdit;
   xyz_delta_box_->setText("0.1");
+  xyz_delta_ = 0.1;
   connect(xyz_delta_box_, SIGNAL(textChanged(const QString &)), this, SLOT(setXYZDelta(const QString &)));
 
   QLabel *rpy_delta_label = new QLabel(tr("rpy delta (deg):"));
   rpy_delta_box_ = new QLineEdit;
   rpy_delta_box_->setText("5.0");
+  rpy_delta_ = 5.0;
   connect(rpy_delta_box_, SIGNAL(textChanged(const QString &)), this, SLOT(setRPYDelta(const QString &)));
 
   QGroupBox *tf_ctrl_section = new QGroupBox(tr("Manipulation Data"));
 
   QHBoxLayout *tf_row = new QHBoxLayout;
   tf_row->addWidget(tf_label);
-  tf_row->addWidget(tf_);
+  tf_row->addWidget(active_tfs_);
 
   QHBoxLayout *xyz_delta_row = new QHBoxLayout;
   xyz_delta_row->addWidget(xyz_delta_label);
@@ -248,7 +251,7 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
     value->setText("0.0");
     value->setProperty("dof", (int)i);
     dof_box_values_.push_back(value);
-    connect(dof_box_values_[i], SIGNAL(textChanged(const QString &)), this, SLOT(setIncrementValue(const QString &)));
+    connect(dof_box_values_[i], SIGNAL(textEdited(const QString &)), this, SLOT(setIncrementValue(const QString &)));
 
     QPushButton *plus = new QPushButton;
     plus->setText("+");
@@ -274,13 +277,21 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
   
 }
 
+void manipulateTFTab::updateTFList()
+{
+  active_tfs_->clear();
+  for (std::size_t i = 0; i < active_tf_list_.size(); i++)
+  {
+    active_tfs_->addItem(active_tf_list_[i].name_);
+  }
+}
+
 void manipulateTFTab::setIncrementValue(QString text)
 {
   double value = text.toDouble();
   int dof = (sender()->property("dof")).toInt();
   
   dof_values_[dof] = value;
-  dof_box_values_[dof]->setText(QString::number(dof_values_[dof]));
   
   ROS_DEBUG_STREAM_NAMED("setIncrementValue","text = " << text.toStdString() <<
                          ", value = " << value << ", dof = " << dof);

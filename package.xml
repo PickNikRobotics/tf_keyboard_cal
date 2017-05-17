@@ -22,6 +22,7 @@
   <depend>rviz_visual_tools</depend>
   <depend>roscpp</depend>
   <depend>tf2</depend>
+  <depend>tf2_msgs</depend>
   <depend>tf</depend>
   <depend>roslib</depend>
   <depend>rosparam_shortcuts</depend>

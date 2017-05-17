@@ -37,6 +37,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <Eigen/Core>
+#include <tf2_msgs/TFMessage.h>
 
 
 namespace tf_keyboard_cal
@@ -57,11 +58,17 @@ public:
   void updateTF();
   
 private:
+
+  void tf_callback(const tf2_msgs::TFMessage &msg);
+  
   TFRemoteReceiver();
 
   ros::NodeHandle nh_;
   ros::Publisher create_tf_pub_;
   ros::Publisher remove_tf_pub_;  
+  ros::Subscriber tf_sub_;
+
+
   
 }; // end class TFRemoteReceiver
 

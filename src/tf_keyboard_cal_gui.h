@@ -53,18 +53,11 @@
 
 namespace tf_keyboard_cal
 {
-
-class TFKeyboardCalGui : public rviz::Panel
-{
-  Q_OBJECT
-public:
-  explicit TFKeyboardCalGui(QWidget *parent = 0);
-
-  void publishTFs();
-  
-private:
-  QTabWidget *tabWidget_;
-  QComboBox *active_tfs_;
+struct tf_data{
+  std::size_t id_;
+  std::string from_;
+  std::string to_;
+  QString name_;
 };
 
 /**
@@ -76,8 +69,7 @@ class createTFTab : public QWidget
   
 public:
   explicit createTFTab(QWidget *parent = 0);
-  void setActiveTFComboBox();
-
+                        
 protected Q_SLOTS:
   void createNewTF();
   void removeTF();
@@ -86,16 +78,6 @@ protected Q_SLOTS:
   void toTextChanged(QString text);
   
 private:
-
-  struct tf_data{
-    std::size_t id_;
-    std::string from_;
-    std::string to_;
-    QString name_;
-  };
-
-  std::vector< tf_data > active_tf_list_;
-  
   std::string from_tf_name_;
   std::string to_tf_name_;
 
@@ -121,7 +103,8 @@ class manipulateTFTab : public QWidget
 
 public:
   explicit manipulateTFTab(QWidget *parent = 0);
-
+  void updateTFList();
+                     
 protected Q_SLOTS:
   void incrementDOF();
   void setIncrementValue(QString text);
@@ -138,7 +121,7 @@ private:
   double xyz_delta_;
   double rpy_delta_;
 
-  QComboBox *tf_;
+  QComboBox *active_tfs_;
 
   QLineEdit *xyz_delta_box_;
   QLineEdit *rpy_delta_box_;
@@ -168,6 +151,23 @@ private:
   
   std::string full_save_path_;
   std::string full_load_path_;
+};
+
+/**
+ * Main class
+ */
+class TFKeyboardCalGui : public rviz::Panel
+{
+  Q_OBJECT
+public:
+  explicit TFKeyboardCalGui(QWidget *parent = 0);
+
+protected Q_SLOTS:
+  void updateTFList();
+  
+private:
+  QTabWidget *tab_widget_;
+  manipulateTFTab *new_manipulate_tab_;
 };
 
 } // end namespace tf_keyboard_cal
