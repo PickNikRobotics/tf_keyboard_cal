@@ -40,6 +40,8 @@
 #include <QFileDialog>
 #include <QGridLayout>
 
+#include <tf/transform_datatypes.h>
+
 // TODO: Why doesn't example put this in the include dir?
 #include "tf_keyboard_cal_gui.h"
 
@@ -160,15 +162,34 @@ void createTFTab::createNewTF()
   }
 
   // publish new tf
-  geometry_msgs::TransformStamped new_tf_msg;
-  new_tf_msg.header.seq = new_tf.id_;
-  new_tf_msg.header.frame_id = new_tf.from_;
-  new_tf_msg.child_frame_id = new_tf.to_;  
-  remote_receiver_->createTF(new_tf_msg);
+  remote_receiver_->createTF(new_tf.getTFMsg());
+}
+
+geometry_msgs::TransformStamped tf_data::getTFMsg()
+{
+  geometry_msgs::TransformStamped msg;
+  msg.header.frame_id = from_;
+  msg.header.stamp = ros::Time::now();
+  msg.child_frame_id = to_;
+  msg.transform.translation.x = values_[0];
+  msg.transform.translation.y = values_[1];
+  msg.transform.translation.z = values_[2];
+
+  tf::Quaternion q;
+  double deg_to_rad = 3.14159265 / 180.0;
+  q.setRPY(values_[3] * deg_to_rad, values_[4] * deg_to_rad, values_[5] * deg_to_rad);
+
+  msg.transform.rotation.x = q[0];
+  msg.transform.rotation.y = q[1];
+  msg.transform.rotation.z = q[2];
+  msg.transform.rotation.w = q[3];
+  
+  return msg;
 }
 
 void createTFTab::removeTF()
 {
+  // find tf and remove from list
   std::string tf_id = active_tfs_->currentText().toStdString();
   ROS_DEBUG_STREAM_NAMED("removeTF","remove TF: " << active_tfs_->currentIndex() << ", " << tf_id);
   for (std::size_t i = 0; i < active_tf_list_.size(); i++)
@@ -176,18 +197,18 @@ void createTFTab::removeTF()
     if (active_tf_list_[i].name_ == active_tfs_->currentText())
     {
       ROS_DEBUG_STREAM_NAMED("removeTF","remove index = " << i);
+      remote_receiver_->removeTF(active_tf_list_[i].getTFMsg());
       active_tf_list_.erase(active_tf_list_.begin() + i);
       break;
     }
   }
 
+  // repopulate dropdown lists
   active_tfs_->clear();
   for (std::size_t i = 0; i < active_tf_list_.size(); i++)
   {
     active_tfs_->addItem(active_tf_list_[i].name_);
   }
-  
-  remote_receiver_->removeTF();
 }
 
 void createTFTab::fromTextChanged(QString text)
@@ -207,6 +228,7 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
   QLabel *tf_label = new QLabel(tr("tf:"));
   active_tfs_ = new QComboBox;
   active_tfs_->addItem(tr("Select TF"));
+  connect(active_tfs_, SIGNAL(activated(int)), this, SLOT(setQLineValues(int)));
 
   QLabel *xyz_delta_label = new QLabel(tr("xyz delta (m):"));
   xyz_delta_box_ = new QLineEdit;
@@ -246,9 +268,7 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
   
   std::vector<std::string> labels = { "x (m):", "y (m):", "z (m):", "r (deg):", "p (deg):", "y (deg):"};
   for (std::size_t i = 0; i < labels.size(); i++)
-  {
-    dof_values_.push_back(0.0);
-    
+  { 
     QLabel *label = new QLabel(tr(labels[i].c_str()));
     
     QPushButton *minus = new QPushButton;
@@ -260,8 +280,8 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
     QLineEdit *value = new QLineEdit;
     value->setText("0.0");
     value->setProperty("dof", (int)i);
-    dof_box_values_.push_back(value);
-    connect(dof_box_values_[i], SIGNAL(textEdited(const QString &)), this, SLOT(updateTFValues(const QString &)));
+    dof_qline_edits_.push_back(value);
+    connect(dof_qline_edits_[i], SIGNAL(textEdited(const QString &)), this, SLOT(editTFTextValue(const QString &)));
 
     QPushButton *plus = new QPushButton;
     plus->setText("+");
@@ -284,6 +304,22 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
   setLayout(main_layout);
 
   remote_receiver_ = &TFRemoteReceiver::getInstance();
+}
+
+void manipulateTFTab::setQLineValues(int item_id)
+{
+  for (std::size_t i = 0; i < active_tf_list_.size(); i++)
+  {
+    if (active_tf_list_[i].name_ == active_tfs_->currentText())
+    {
+      ROS_DEBUG_STREAM_NAMED("setQLineValues","name_ = " << active_tf_list_[i].name_.toStdString());
+      for (std::size_t j = 0; j < 6; j++)
+      {
+        dof_qline_edits_[j]->setText(QString::number(active_tf_list_[i].values_[j]));
+      }
+      break;
+    }
+  }
   
 }
 
@@ -294,50 +330,50 @@ void manipulateTFTab::updateTFList()
   {
     active_tfs_->addItem(active_tf_list_[i].name_);
   }
+
+  setQLineValues(active_tfs_->currentIndex());
 }
 
-void manipulateTFTab::updateTFValues(QString text)
+void manipulateTFTab::editTFTextValue(QString text)
 {
   double value = text.toDouble();
   int dof = (sender()->property("dof")).toInt();
   
-  dof_values_[dof] = value;
-  
-  ROS_DEBUG_STREAM_NAMED("updateTFValues","text = " << text.toStdString() <<
-                         ", value = " << value << ", dof = " << dof);
-
-  std::string tf_id = active_tfs_->currentText().toStdString();
-  for (std::size_t i = 0; i < active_tf_list_.size(); i++)
-  {
-    if (active_tf_list_[i].name_ == active_tfs_->currentText())
-    {
-      active_tf_list_[i].values_[dof] = value;
-      
-      ROS_DEBUG_STREAM_NAMED("updateTFValues","tf index = " << i);
-      for (std::size_t j = 0; j < 6; j++)
-      {
-        std::cout << active_tf_list_[i].values_[j] << std::endl;
-      }
-      break;
-    }
-  }
-  
+  updateTFValues(dof, value);
 }
 
 void manipulateTFTab::incrementDOF()
 {
   int dof = (sender()->property("dof")).toInt();
   double sign = (sender()->property("sign")).toDouble();
+
+  double value = dof_qline_edits_[dof]->text().toDouble();
   
   if (dof == 0 || dof == 1 || dof == 2)
-    dof_values_[dof] += (double)sign * xyz_delta_;
+    value += (double)sign * xyz_delta_;
   else
-    dof_values_[dof] += (double)sign * rpy_delta_;
+    value += (double)sign * rpy_delta_;
 
-  dof_box_values_[dof]->setText(QString::number(dof_values_[dof]));
-  
-  ROS_DEBUG_STREAM_NAMED("incrementDOF","dof = " << dof << ", sign = " << sign);
-  remote_receiver_->updateTF();
+  dof_qline_edits_[dof]->setText(QString::number(value));
+  updateTFValues(dof, value);  
+}
+
+void manipulateTFTab::updateTFValues(int dof, double value)
+{
+  for (std::size_t i = 0; i < active_tf_list_.size(); i++)
+  {
+    if (active_tf_list_[i].name_ == active_tfs_->currentText())
+    {
+      ROS_DEBUG_STREAM_NAMED("updateTFValues","name_ = " << active_tf_list_[i].name_.toStdString());
+      active_tf_list_[i].values_[dof] = value;
+      for (std::size_t j = 0; j < 6; j++)
+      {
+        ROS_DEBUG_STREAM_NAMED("updateTFValues", j << " = " << active_tf_list_[i].values_[j]);
+      }
+      remote_receiver_->updateTF(active_tf_list_[i].getTFMsg());
+      break;
+    }
+  }
 }
 
 void manipulateTFTab::setXYZDelta(QString text)

@@ -41,8 +41,9 @@ TFRemoteReceiver::TFRemoteReceiver()
 {
   std::cout << "\033[1;36m" << "remote receiver initialized" << "\033[0m" << std::endl;
 
-  create_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("/create_rviz_tf", 10);
-  remove_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("/remove_rviz_tf", 10);
+  create_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("/rviz_tf_create", 10);
+  remove_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("/rviz_tf_remove", 10);
+  update_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("/rviz_tf_update", 10);
   tf_sub_ = nh_.subscribe("/tf", 1, &TFRemoteReceiver::tf_callback, this);
 }
 
@@ -51,19 +52,19 @@ void TFRemoteReceiver::tf_callback(const tf2_msgs::TFMessage &msg)
   // get names of published tfs
 }
 
-void TFRemoteReceiver::createTF(geometry_msgs::TransformStamped new_tf_msg)
+void TFRemoteReceiver::createTF(geometry_msgs::TransformStamped create_tf_msg)
 {
-  create_tf_pub_.publish(new_tf_msg);
+  create_tf_pub_.publish(create_tf_msg);
 }
 
-void TFRemoteReceiver::removeTF()
+void TFRemoteReceiver::removeTF(geometry_msgs::TransformStamped remove_tf_msg)
 {
-  std::cout << "\033[1;36m" << "remove tf" << "\033[0m" << std::endl;
+  remove_tf_pub_.publish(remove_tf_msg);
 }
 
-void TFRemoteReceiver::updateTF()
+void TFRemoteReceiver::updateTF(geometry_msgs::TransformStamped update_tf_msg)
 {
-  std::cout << "\033[1;36m" << "update tf" << "\033[0m" << std::endl;
+  update_tf_pub_.publish(update_tf_msg);
 }
 
 } // end namespace tf_keyboard_cal

@@ -53,9 +53,9 @@ public:
     return instance;
   }
   
-  void createTF(geometry_msgs::TransformStamped new_tf_msg);
-  void removeTF();
-  void updateTF();
+  void createTF(geometry_msgs::TransformStamped create_tf_msg);
+  void removeTF(geometry_msgs::TransformStamped remove_tf_msg);
+  void updateTF(geometry_msgs::TransformStamped update_tf_msg);
   
 private:
 
@@ -65,11 +65,10 @@ private:
 
   ros::NodeHandle nh_;
   ros::Publisher create_tf_pub_;
-  ros::Publisher remove_tf_pub_;  
+  ros::Publisher remove_tf_pub_;
+  ros::Publisher update_tf_pub_;
   ros::Subscriber tf_sub_;
 
-
-  
 }; // end class TFRemoteReceiver
 
 } // end namespace tf_keyboard_cal
