@@ -1,3 +1,13 @@
+# NEW BRANCH
+
+```
+roslaunch tf_keyboard_cal rviz_demo.launch
+rosrun tf_keyboard_cal tf_keyboard_cal
+```
+
+In `rviz` add the tf panel by: `Panel -> Add New Panel ->TFKeyboardCalGUI`
+
+
 # Manual TF Calibration Tools
 
 Move /tf frames around using your keyboard or interactive markers - a simple calibration-by-eye tool!
