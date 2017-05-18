@@ -100,6 +100,16 @@ target_link_libraries(${PROJECT_NAME}_receiver ${catkin_LIBRARIES})
 add_library(${PROJECT_NAME}_gui ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME}_gui ${PROJECT_NAME}_receiver ${rviz_DEFAULT_PLUGIN_LIBRARIES} ${QT_LIBRARIES} ${catkin_LIBRARIES})
 
+add_library(${PROJECT_NAME}_rviz_publisher
+  src/rviz_tf_publisher.cpp)
+target_link_libraries(${PROJECT_NAME}_rviz_publisher
+  ${catkin_LIBRARIES})
+
+add_executable(${PROJECT_NAME}
+  src/tf_keyboard.cpp)
+target_link_libraries(${PROJECT_NAME}
+  ${PROJECT_NAME}_rviz_publisher
+  ${catkin_LIBRARIES})
 
 # Library
 # add_library(${PROJECT_NAME}_manual_tf_alignment
@@ -139,6 +149,8 @@ target_link_libraries(${PROJECT_NAME}_gui ${PROJECT_NAME}_receiver ${rviz_DEFAUL
 # target_link_libraries(${PROJECT_NAME}_demo_tf_listener
 #   ${catkin_LIBRARIES}
 # )
+
+
 
 #############
 ## Testing ##
