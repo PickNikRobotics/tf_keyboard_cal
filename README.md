@@ -2,10 +2,10 @@
 
 ```
 roslaunch tf_keyboard_cal rviz_demo.launch
-rosrun tf_keyboard_cal tf_keyboard_cal
 ```
 
 In `rviz` add the tf panel by: `Panel -> Add New Panel ->TFKeyboardCalGUI`
+
 
 
 # Manual TF Calibration Tools
