@@ -163,6 +163,25 @@ void createTFTab::createNewTF()
 
   // publish new tf
   remote_receiver_->createTF(new_tf.getTFMsg());
+  
+  // update from list
+  from_->clear();
+  from_->addItem(tr("Select existing or add new TF"));
+  std::list<std::string> names;
+  for (std::size_t i = 0; i < active_tf_list_.size(); i++)
+  {
+    names.push_back(active_tf_list_[i].from_);
+    names.push_back(active_tf_list_[i].to_);
+  }
+
+  names.sort();
+  names.unique();
+
+  std::list<std::string>::iterator it;
+  for (it = names.begin(); it != names.end(); ++it)
+  {
+    from_->addItem(tr( (*it).c_str() ));
+  }
 }
 
 geometry_msgs::TransformStamped tf_data::getTFMsg()
@@ -209,6 +228,26 @@ void createTFTab::removeTF()
   {
     active_tfs_->addItem(active_tf_list_[i].name_);
   }
+
+  // update from list
+  from_->clear();
+  from_->addItem(tr("Select existing or add new TF"));
+  std::list<std::string> names;
+  for (std::size_t i = 0; i < active_tf_list_.size(); i++)
+  {
+    names.push_back(active_tf_list_[i].from_);
+    names.push_back(active_tf_list_[i].to_);
+  }
+
+  names.sort();
+  names.unique();
+
+  std::list<std::string>::iterator it;
+  for (it = names.begin(); it != names.end(); ++it)
+  {
+    from_->addItem(tr( (*it).c_str() ));
+  }
+  
 }
 
 void createTFTab::fromTextChanged(QString text)

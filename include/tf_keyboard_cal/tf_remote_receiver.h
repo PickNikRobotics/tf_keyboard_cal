@@ -56,10 +56,12 @@ public:
   void createTF(geometry_msgs::TransformStamped create_tf_msg);
   void removeTF(geometry_msgs::TransformStamped remove_tf_msg);
   void updateTF(geometry_msgs::TransformStamped update_tf_msg);
+  std::list<std::string> getTFNames();
   
 private:
 
-  void tf_callback(const tf2_msgs::TFMessage &msg);
+  void tfCallback(const tf2_msgs::TFMessage &msg);
+
   
   TFRemoteReceiver();
 
@@ -69,6 +71,8 @@ private:
   ros::Publisher update_tf_pub_;
   ros::Subscriber tf_sub_;
 
+  std::list< std::string > tf_names_;
+  
 }; // end class TFRemoteReceiver
 
 } // end namespace tf_keyboard_cal
