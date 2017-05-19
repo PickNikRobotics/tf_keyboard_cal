@@ -53,23 +53,26 @@ std::vector< tf_data > active_tf_list_;
 TFKeyboardCalGui::TFKeyboardCalGui(QWidget* parent) : rviz::Panel(parent)
 { 
   tab_widget_ = new QTabWidget;
-  tab_widget_->addTab(new createTFTab(), tr("Add / Remove"));
+  connect(tab_widget_, SIGNAL(tabBarClicked(int)), this, SLOT(updateTabData()));
+  
+  new_create_tab_ = new createTFTab();
+  tab_widget_->addTab(new_create_tab_, tr("Add / Remove"));
 
   new_manipulate_tab_ = new manipulateTFTab();
-  connect(tab_widget_, SIGNAL(tabBarClicked(int)), this, SLOT(updateTFList()));
   tab_widget_->addTab(new_manipulate_tab_, tr("Manipulate"));
-  // tab_widget_->addTab(new manipulateTFTab(), tr("Manipulate"));
-  
-  tab_widget_->addTab(new saveLoadTFTab(), tr("Save / Load"));
+
+  new_save_load_tab_ = new saveLoadTFTab(); 
+  tab_widget_->addTab(new_save_load_tab_, tr("Save / Load"));
 
   QVBoxLayout *main_layout = new QVBoxLayout;
   main_layout->addWidget(tab_widget_);
   setLayout(main_layout);
 }
 
-void TFKeyboardCalGui::updateTFList()
+void TFKeyboardCalGui::updateTabData()
 {
   new_manipulate_tab_->updateTFList();
+  new_create_tab_->updateFromList();
 }
 
 createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
@@ -163,24 +166,22 @@ void createTFTab::createNewTF()
 
   // publish new tf
   remote_receiver_->createTF(new_tf.getTFMsg());
+
+  updateFromList();  
+}
+
+void createTFTab::updateFromList()
+{
+  // give tf a chance to update
+  ros::Duration(0.25).sleep();
   
   // update from list
   from_->clear();
   from_->addItem(tr("Select existing or add new TF"));
-  std::list<std::string> names;
-  for (std::size_t i = 0; i < active_tf_list_.size(); i++)
+  std::vector<std::string> names = remote_receiver_->getTFNames();
+  for (std::size_t i = 0; i < names.size(); i++)
   {
-    names.push_back(active_tf_list_[i].from_);
-    names.push_back(active_tf_list_[i].to_);
-  }
-
-  names.sort();
-  names.unique();
-
-  std::list<std::string>::iterator it;
-  for (it = names.begin(); it != names.end(); ++it)
-  {
-    from_->addItem(tr( (*it).c_str() ));
+    from_->addItem(tr(names[i].c_str()));
   }
 }
 

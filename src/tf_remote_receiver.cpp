@@ -44,19 +44,8 @@ TFRemoteReceiver::TFRemoteReceiver()
   create_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("/rviz_tf_create", 10);
   remove_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("/rviz_tf_remove", 10);
   update_tf_pub_ = nh_.advertise<geometry_msgs::TransformStamped>("/rviz_tf_update", 10);
-  tf_sub_ = nh_.subscribe("/tf", 1, &TFRemoteReceiver::tfCallback, this);
-}
 
-void TFRemoteReceiver::tfCallback(const tf2_msgs::TFMessage &msg)
-{ 
-  for (std::size_t i = 0; i < msg.transforms.size(); i++)
-  {
-    tf_names_.push_back(msg.transforms[i].child_frame_id);
-    tf_names_.push_back(msg.transforms[i].header.frame_id);
-  }
-  
-  tf_names_.sort();
-  tf_names_.unique();
+  tf_listener_ = new tf2_ros::TransformListener(tf_buffer_);
 }
 
 void TFRemoteReceiver::createTF(geometry_msgs::TransformStamped create_tf_msg)
@@ -74,8 +63,10 @@ void TFRemoteReceiver::updateTF(geometry_msgs::TransformStamped update_tf_msg)
   update_tf_pub_.publish(update_tf_msg);
 }
 
-std::list<std::string> TFRemoteReceiver::getTFNames()
+std::vector<std::string> TFRemoteReceiver::getTFNames()
 {
+  tf_buffer_._getFrameStrings(tf_names_);
+
   return tf_names_;
 }
 

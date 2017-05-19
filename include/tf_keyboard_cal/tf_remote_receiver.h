@@ -38,6 +38,7 @@
 #include <geometry_msgs/TransformStamped.h>
 #include <Eigen/Core>
 #include <tf2_msgs/TFMessage.h>
+#include <tf2_ros/transform_listener.h>
 
 
 namespace tf_keyboard_cal
@@ -56,12 +57,9 @@ public:
   void createTF(geometry_msgs::TransformStamped create_tf_msg);
   void removeTF(geometry_msgs::TransformStamped remove_tf_msg);
   void updateTF(geometry_msgs::TransformStamped update_tf_msg);
-  std::list<std::string> getTFNames();
+  std::vector<std::string> getTFNames();
   
 private:
-
-  void tfCallback(const tf2_msgs::TFMessage &msg);
-
   
   TFRemoteReceiver();
 
@@ -69,9 +67,11 @@ private:
   ros::Publisher create_tf_pub_;
   ros::Publisher remove_tf_pub_;
   ros::Publisher update_tf_pub_;
-  ros::Subscriber tf_sub_;
 
-  std::list< std::string > tf_names_;
+  std::vector< std::string > tf_names_;
+
+    tf2_ros::Buffer tf_buffer_;
+  tf2_ros::TransformListener *tf_listener_;
   
 }; // end class TFRemoteReceiver
 

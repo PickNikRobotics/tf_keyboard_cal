@@ -72,6 +72,7 @@ class createTFTab : public QWidget
   
 public:
   explicit createTFTab(QWidget *parent = 0);
+  void updateFromList();                                           
                         
 protected Q_SLOTS:
   void createNewTF();
@@ -171,11 +172,14 @@ public:
   explicit TFKeyboardCalGui(QWidget *parent = 0);
 
 protected Q_SLOTS:
-  void updateTFList();
+  void updateTabData();
   
 private:
   QTabWidget *tab_widget_;
+  
+  createTFTab *new_create_tab_;
   manipulateTFTab *new_manipulate_tab_;
+  saveLoadTFTab *new_save_load_tab_;
 };
 
 } // end namespace tf_keyboard_cal
