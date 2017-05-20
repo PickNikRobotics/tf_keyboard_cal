@@ -67,6 +67,8 @@ TFKeyboardCalGui::TFKeyboardCalGui(QWidget* parent) : rviz::Panel(parent)
   QVBoxLayout *main_layout = new QVBoxLayout;
   main_layout->addWidget(tab_widget_);
   setLayout(main_layout);
+
+  updateTabData();
 }
 
 void TFKeyboardCalGui::updateTabData()
@@ -468,24 +470,82 @@ saveLoadTFTab::saveLoadTFTab(QWidget *parent) : QWidget(parent)
   main_layout->addWidget(file_section);
   setLayout(main_layout);
 
+  remote_receiver_ = &TFRemoteReceiver::getInstance();
 }
 
 void saveLoadTFTab::load()
 {
-  QString filters("YAML files (*.yaml);;All files (*.*)");
-  QString default_filter("YAML files (*.yaml)");
+  QString filters("csv files (*.cvs);;All files (*.*)");
+  QString default_filter("csv files (*.cvs)");
   
   QString directory =
     QFileDialog::getOpenFileName(0, "Load TF File", QDir::currentPath(), filters, &default_filter);
 
   full_load_path_ = directory.toStdString();
   ROS_DEBUG_STREAM_NAMED("load","load_file = " << full_load_path_);
+
+  std::ifstream in_file(full_load_path_);
+  std::string line;
+
+  int id;
+  int result;
+  char from[256];
+  char to[256];
+  float x, y, z, roll, pitch, yaw;
+  
+  if (in_file.is_open())
+  {
+    while (std::getline(in_file, line))
+    {
+      ROS_DEBUG_STREAM_NAMED("load",line);
+      result = sscanf(line.c_str(), "%d %s %s %f %f %f %f %f %f", &id, from, to, &x, &y, &z, &roll, &pitch, &yaw);
+      ROS_DEBUG_STREAM_NAMED("load","result = " << result);
+
+      if (result == 9)
+      {
+        ROS_DEBUG_STREAM_NAMED("load",id);
+        ROS_DEBUG_STREAM_NAMED("load",from);
+        ROS_DEBUG_STREAM_NAMED("load",to);
+        ROS_DEBUG_STREAM_NAMED("load",x);
+        ROS_DEBUG_STREAM_NAMED("load",y);
+        ROS_DEBUG_STREAM_NAMED("load",z);
+        ROS_DEBUG_STREAM_NAMED("load",roll);
+        ROS_DEBUG_STREAM_NAMED("load",pitch);
+        ROS_DEBUG_STREAM_NAMED("load",yaw);
+        
+        // create new tf
+        tf_data new_tf;
+        new_tf.id_ = id;
+        std::string frame_id(from);
+        new_tf.from_ = frame_id;
+        std::string child_frame_id(to);
+        new_tf.to_ = child_frame_id;
+        new_tf.values_[0] = x;
+        new_tf.values_[1] = y;
+        new_tf.values_[2] = z;
+        new_tf.values_[3] = roll;
+        new_tf.values_[4] = pitch;
+        new_tf.values_[5] = yaw;
+       
+        std::string text = std::to_string(new_tf.id_) + ": " + new_tf.from_ + "-" + new_tf.to_;
+        new_tf.name_ = QString::fromStdString(text);
+        
+        active_tf_list_.push_back(new_tf);
+        remote_receiver_->createTF(new_tf.getTFMsg());
+      }
+    }
+  }
+  else
+  {
+    ROS_ERROR_STREAM_NAMED("load","Unable to open file.");
+  }
+  in_file.close();
 }
 
 void saveLoadTFTab::save()
 {
-  QString filters("YAML files (*.yaml);;All files (*.*)");
-  QString default_filter("YAML files (*.yaml)");
+  QString filters("YAML files (*.cvs);;All files (*.*)");
+  QString default_filter("YAML files (*.cvs)");
   
   QString directory =
     QFileDialog::getSaveFileName(0, "Save TF File", QDir::currentPath(), filters, &default_filter);

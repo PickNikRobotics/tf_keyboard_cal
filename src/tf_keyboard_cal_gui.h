@@ -51,6 +51,10 @@
 #include <QDoubleValidator>
 #include <QDir>
 
+#include <iostream>
+#include <fstream>
+#include <stdio.h>
+
 namespace tf_keyboard_cal
 {
 struct tf_data{
@@ -160,6 +164,8 @@ private:
   
   std::string full_save_path_;
   std::string full_load_path_;
+
+  TFRemoteReceiver *remote_receiver_;
 };
 
 /**
