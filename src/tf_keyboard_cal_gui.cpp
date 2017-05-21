@@ -475,8 +475,8 @@ saveLoadTFTab::saveLoadTFTab(QWidget *parent) : QWidget(parent)
 
 void saveLoadTFTab::load()
 {
-  QString filters("csv files (*.cvs);;All files (*.*)");
-  QString default_filter("csv files (*.cvs)");
+  QString filters("rviz tf files (*.rviztf);;All files (*.*)");
+  QString default_filter("rviz tf files (*.rviztf)");
   
   QString directory =
     QFileDialog::getOpenFileName(0, "Load TF File", QDir::currentPath(), filters, &default_filter);
@@ -497,9 +497,7 @@ void saveLoadTFTab::load()
   {
     while (std::getline(in_file, line))
     {
-      ROS_DEBUG_STREAM_NAMED("load",line);
       result = sscanf(line.c_str(), "%d %s %s %f %f %f %f %f %f", &id, from, to, &x, &y, &z, &roll, &pitch, &yaw);
-      ROS_DEBUG_STREAM_NAMED("load","result = " << result);
 
       if (result == 9)
       {
@@ -533,29 +531,62 @@ void saveLoadTFTab::load()
         active_tf_list_.push_back(new_tf);
         remote_receiver_->createTF(new_tf.getTFMsg());
       }
+      else
+      {
+        ROS_INFO_STREAM_NAMED("load","skipping line: " << line);
+      }
     }
   }
   else
   {
-    ROS_ERROR_STREAM_NAMED("load","Unable to open file.");
+    ROS_ERROR_STREAM_NAMED("load","Unable to open file: " << full_load_path_);
   }
   in_file.close();
 }
 
 void saveLoadTFTab::save()
 {
-  QString filters("YAML files (*.cvs);;All files (*.*)");
-  QString default_filter("YAML files (*.cvs)");
+  QString filters("rviz tf files (*.rviztf);;All files (*.*)");
+  QString default_filter("rviz tf files (*.rviztf)");
   
   QString directory =
     QFileDialog::getSaveFileName(0, "Save TF File", QDir::currentPath(), filters, &default_filter);
 
-
   full_save_path_ = directory.toStdString();
 
-  // TODO: check for file extension and automatically append if left off
+  // check if user specified file extension
+  std::size_t found = full_save_path_.find(".");
+  if (found == std::string::npos)
+    full_save_path_ += ".rviztf";
   
-  ROS_DEBUG_STREAM_NAMED("load","save_file = " << full_save_path_);
+  ROS_DEBUG_STREAM_NAMED("save","save_file = " << full_save_path_);
+
+  std::ofstream out_file;
+  out_file.open(full_save_path_);
+  
+  std::string header = "#ID FRAME_ID CHILD_FRAME_ID X Y Z ROLL PITCH YAW\n# (comment line)\n# space delimeter";
+
+  if (out_file.is_open())
+  {
+    out_file << header << std::endl;
+    for (std::size_t i = 0; i < active_tf_list_.size(); i++)
+    {
+      out_file << active_tf_list_[i].id_ << " ";
+      out_file << active_tf_list_[i].from_ << " ";
+      out_file << active_tf_list_[i].to_;
+      for (std::size_t j = 0; j < 6; j++)
+      {
+        out_file << " " << active_tf_list_[i].values_[j];
+      }
+      out_file << std::endl;
+    }
+    out_file.close();
+  }
+  else
+  {
+    ROS_ERROR_STREAM_NAMED("save","Unable to open file: " << full_save_path_);
+  }
+  
 }
 
 } // end namespace tf_keyboard_cal
