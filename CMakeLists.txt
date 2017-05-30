@@ -21,14 +21,20 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
 )
 
-find_package(Eigen REQUIRED)
+find_package(Eigen3 REQUIRED)
+
+# Eigen 3.2 (Wily) only provides EIGEN3_INCLUDE_DIR, not EIGEN3_INCLUDE_DIRS
+if(NOT EIGEN3_INCLUDE_DIRS)
+  set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
+endif()
+
 find_package(Boost REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS
   include
   LIBRARIES
-  ${PROJECT_NAME}_gui  
+  ${PROJECT_NAME}_gui
 #    ${PROJECT_NAME}_manual_tf_alignment
 #    ${PROJECT_NAME}_imarker_simple
   CATKIN_DEPENDS
@@ -40,7 +46,7 @@ catkin_package(
     rosparam_shortcuts
     interactive_markers
   DEPENDS
-    Eigen
+    EIGEN3
 )
 
 # Qt 4 or 5
@@ -75,7 +81,7 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIR}
-  ${EIGEN_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
 ###########
