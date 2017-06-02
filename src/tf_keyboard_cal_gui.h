@@ -43,6 +43,7 @@
 #include <tf_keyboard_cal/tf_remote_receiver.h>
 
 #include <QTabWidget>
+#include <QtGui>
 #include <QPushButton>
 #include <QLabel>
 #include <QLineEdit>
@@ -116,11 +117,16 @@ public:
 protected Q_SLOTS:
   void incrementDOF();
   void editTFTextValue(QString text);
-  
+
   void setXYZDelta(QString text);
   void setRPYDelta(QString text);
 
   void setQLineValues(int item_id);
+
+protected:
+  void keyPressEvent(QKeyEvent *);
+  // TODO: Don't think I need release...
+  // void keyReleaseEvent(QKeyEvent *); 
   
 private:
 

@@ -348,6 +348,12 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
   remote_receiver_ = &TFRemoteReceiver::getInstance();
 }
 
+void manipulateTFTab::keyPressEvent(QKeyEvent *event)
+{
+  // TODO: set to same keys as before, call update to tf when pressed.
+  ROS_DEBUG_STREAM_NAMED("keyPressEvent","pressed key");
+}
+
 void manipulateTFTab::setQLineValues(int item_id)
 {
   for (std::size_t i = 0; i < active_tf_list_.size(); i++)
