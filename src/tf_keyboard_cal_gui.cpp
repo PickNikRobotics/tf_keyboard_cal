@@ -53,7 +53,7 @@ std::vector< tf_data > active_tf_list_;
 TFKeyboardCalGui::TFKeyboardCalGui(QWidget* parent) : rviz::Panel(parent)
 { 
   tab_widget_ = new QTabWidget;
-  connect(tab_widget_, SIGNAL(tabBarClicked(int)), this, SLOT(updateTabData()));
+  connect(tab_widget_, SIGNAL(tabBarClicked(int)), this, SLOT(updateTabData(int)));
   
   new_create_tab_ = new createTFTab();
   tab_widget_->addTab(new_create_tab_, tr("Add / Remove"));
@@ -68,13 +68,19 @@ TFKeyboardCalGui::TFKeyboardCalGui(QWidget* parent) : rviz::Panel(parent)
   main_layout->addWidget(tab_widget_);
   setLayout(main_layout);
 
-  updateTabData();
+  updateTabData(0);
 }
 
-void TFKeyboardCalGui::updateTabData()
+void TFKeyboardCalGui::updateTabData(int index)
 {
+  ROS_DEBUG_STREAM_NAMED("updateTabData","index = " << index);
   new_manipulate_tab_->updateTFList();
   new_create_tab_->updateFromList();
+
+  if (index == 1) // manipulate tab selected. 
+  {
+    new_manipulate_tab_->setFocus();
+  }
 }
 
 createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
@@ -137,6 +143,8 @@ createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
   setLayout(main_layout);
 
   id_ = 0;
+
+  this->setFocus();
   
   remote_receiver_ = &TFRemoteReceiver::getInstance();
 }
@@ -344,14 +352,97 @@ manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)
   main_layout->addWidget(tf_ctrl_section);
   main_layout->addWidget(tf_increment_section);
   setLayout(main_layout);
-
+  
   remote_receiver_ = &TFRemoteReceiver::getInstance();
 }
 
 void manipulateTFTab::keyPressEvent(QKeyEvent *event)
 {
-  // TODO: set to same keys as before, call update to tf when pressed.
-  ROS_DEBUG_STREAM_NAMED("keyPressEvent","pressed key");
+
+  double xyz_delta = 0.01;
+  double rpy_delta = 1.0; // degrees
+  
+  switch (event->key())
+  {
+    case Qt::Key_A:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","x+");
+      incrementDOF(0, 1.0);
+      break;
+    case Qt::Key_Q:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","x-");
+      incrementDOF(0, -1.0);
+      break;
+    case Qt::Key_W:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","y+");
+      incrementDOF(1, 1.0);
+      break;
+    case Qt::Key_S:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","y-");
+      incrementDOF(1, -1.0);
+      break;
+    case Qt::Key_E:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","z+");
+      incrementDOF(2, 1.0);
+      break;
+    case Qt::Key_D:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","z-");
+      incrementDOF(2, -1.0);
+      break;
+    case Qt::Key_R:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","roll+");
+      incrementDOF(3, 1.0);
+      break;
+    case Qt::Key_F:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","roll-");
+      incrementDOF(3, -1.0);
+      break;
+    case Qt::Key_T:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","pitch+");
+      incrementDOF(4, 1.0);
+      break;
+    case Qt::Key_G:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","pitch-");
+      incrementDOF(4, -1.0);
+      break;
+    case Qt::Key_Y:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","yaw+");
+      incrementDOF(5, 1.0);
+      break;
+    case Qt::Key_H:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","yaw-");
+      incrementDOF(5, -1.0);
+      break;
+    case Qt::Key_U:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","fast");
+      xyz_delta = 0.1;
+      rpy_delta = 5.0; // degrees
+      xyz_delta_box_->setText(QString::number(xyz_delta));
+      rpy_delta_box_->setText(QString::number(rpy_delta));
+      setXYZDelta(xyz_delta);
+      setRPYDelta(rpy_delta);
+      break;
+    case Qt::Key_I:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","medium");
+      xyz_delta = 0.01;
+      rpy_delta = 1.0; // degrees
+      xyz_delta_box_->setText(QString::number(xyz_delta));
+      rpy_delta_box_->setText(QString::number(rpy_delta));      
+      setXYZDelta(xyz_delta);
+      setRPYDelta(rpy_delta);      
+      break;
+    case Qt::Key_O:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","slow");
+      xyz_delta = 0.001;
+      rpy_delta = 0.5; // degrees
+      xyz_delta_box_->setText(QString::number(xyz_delta));
+      rpy_delta_box_->setText(QString::number(rpy_delta));      
+      setXYZDelta(xyz_delta);
+      setRPYDelta(rpy_delta);
+      break;
+    default:
+      ROS_DEBUG_STREAM_NAMED("keyPressEvent","undefined key pressed");
+      break;
+  }
 }
 
 void manipulateTFTab::setQLineValues(int item_id)
@@ -395,6 +486,11 @@ void manipulateTFTab::incrementDOF()
   int dof = (sender()->property("dof")).toInt();
   double sign = (sender()->property("sign")).toDouble();
 
+  incrementDOF(dof, sign);
+}
+
+void manipulateTFTab::incrementDOF(int dof, double sign)
+{
   double value = dof_qline_edits_[dof]->text().toDouble();
   
   if (dof == 0 || dof == 1 || dof == 2)
@@ -425,10 +521,18 @@ void manipulateTFTab::updateTFValues(int dof, double value)
 }
 
 void manipulateTFTab::setXYZDelta(QString text)
-{
-  xyz_delta_ = text.toDouble();
-  ROS_DEBUG_STREAM_NAMED("set_xyz_delta","text = " << text.toStdString() << ", value = " << xyz_delta_);  
+{ 
+  double xyz_delta = text.toDouble();
 
+  ROS_DEBUG_STREAM_NAMED("set_xyz_delta","text = " << text.toStdString() << ", value = " << xyz_delta);
+  
+  setXYZDelta(xyz_delta);
+}
+
+void manipulateTFTab::setXYZDelta(double xyz_delta)
+{
+  xyz_delta_ = xyz_delta;
+  
   if (std::abs(xyz_delta_) > MAX_XYZ_DELTA)
   {
     ROS_WARN_STREAM_NAMED("setXYZDelta","Tried to set XYZ delta outside of limits. (+/-" << MAX_XYZ_DELTA << ")");
@@ -438,13 +542,22 @@ void manipulateTFTab::setXYZDelta(QString text)
   }
   
   ROS_DEBUG_STREAM_NAMED("set_xyz_delta","setting xyz_delta_ = " << xyz_delta_);
+
 }
 
 void manipulateTFTab::setRPYDelta(QString text)
 {
-  rpy_delta_ = text.toDouble();
-  ROS_DEBUG_STREAM_NAMED("set_rpy_delta","text = " << text.toStdString() << ", value = " << rpy_delta_);
+  double rpy_delta = text.toDouble();
+  
+  ROS_DEBUG_STREAM_NAMED("set_rpy_delta","text = " << text.toStdString() << ", value = " << rpy_delta);
 
+  setRPYDelta(rpy_delta);
+}
+
+void manipulateTFTab::setRPYDelta(double rpy_delta)
+{
+  rpy_delta_ = rpy_delta;
+  
   if (std::abs(rpy_delta_) > MAX_RPY_DELTA)
   {
     ROS_WARN_STREAM_NAMED("setRPYDelta","Tried to set RPY delta outside of limits. (+/-" << MAX_RPY_DELTA << ")");
@@ -453,7 +566,7 @@ void manipulateTFTab::setRPYDelta(QString text)
     rpy_delta_box_->setText(value);
   }
   
-  ROS_DEBUG_STREAM_NAMED("set_rpy_delta","setting rpy_delta_ = " << rpy_delta_);
+  ROS_DEBUG_STREAM_NAMED("set_rpy_delta","setting rpy_delta_ = " << rpy_delta_);  
 }
 
 saveLoadTFTab::saveLoadTFTab(QWidget *parent) : QWidget(parent)

@@ -116,11 +116,16 @@ public:
                      
 protected Q_SLOTS:
   void incrementDOF();
+  void incrementDOF(int dof, double sign);
+  
   void editTFTextValue(QString text);
 
   void setXYZDelta(QString text);
   void setRPYDelta(QString text);
 
+  void setXYZDelta(double xyz_delta);
+  void setRPYDelta(double rpy_delta);
+  
   void setQLineValues(int item_id);
 
 protected:
@@ -131,6 +136,8 @@ protected:
 private:
 
   void updateTFValues(int dof, double value);
+
+  // can't overload 'set
   
   static constexpr double MAX_XYZ_DELTA = 100.0;
   static constexpr double MAX_RPY_DELTA = 360.0;
@@ -184,7 +191,7 @@ public:
   explicit TFKeyboardCalGui(QWidget *parent = 0);
 
 protected Q_SLOTS:
-  void updateTabData();
+  void updateTabData(int);
   
 private:
   QTabWidget *tab_widget_;
