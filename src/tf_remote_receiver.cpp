@@ -60,7 +60,7 @@ void TFRemoteReceiver::removeTF(geometry_msgs::TransformStamped remove_tf_msg)
 
 void TFRemoteReceiver::updateTF(geometry_msgs::TransformStamped update_tf_msg)
 {
-  update_tf_pub_.publish(update_tf_msg);
+  update_tf_pub_.publish(update_tf_msg); 
 }
 
 std::vector<std::string> TFRemoteReceiver::getTFNames()

@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /InteractiveMarkers1
       Splitter Ratio: 0.5
     Tree Height: 308
   - Class: rviz/Selection
@@ -55,7 +56,7 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        base:
+        a:
           Value: true
         world:
           Value: true
@@ -65,8 +66,8 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        base:
-          world:
+        world:
+          a:
             {}
       Update Interval: 0
       Value: true
@@ -94,6 +95,15 @@ Visualization Manager:
       Topic: /posestamped
       Unreliable: false
       Value: false
+    - Class: rviz/InteractiveMarkers
+      Enable Transparency: true
+      Enabled: true
+      Name: InteractiveMarkers
+      Show Axes: false
+      Show Descriptions: true
+      Show Visual Aids: false
+      Update Topic: /tf_keyboard_cal_imarkers/update
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -118,7 +128,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.64484
+      Distance: 7.7095623
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -132,10 +142,10 @@ Visualization Manager:
       Focal Shape Size: 0.0500000007
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.270397991
+      Pitch: 0.590397716
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.89858007
+      Yaw: 5.51858854
     Saved: ~
 Window Geometry:
   Displays:

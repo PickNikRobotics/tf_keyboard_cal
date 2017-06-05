@@ -33,22 +33,16 @@
  */
 #include <stdio.h>
 
-
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGroupBox>
-#include <QFileDialog>
-#include <QGridLayout>
-
-#include <tf/transform_datatypes.h>
-
 // TODO: Why doesn't example put this in the include dir?
+// Looks like it doesn't work if *.h is in include dir?
 #include "tf_keyboard_cal_gui.h"
 
 namespace tf_keyboard_cal
 {
 
 std::vector< tf_data > active_tf_list_;
+
+boost::shared_ptr<interactive_markers::InteractiveMarkerServer> imarker_server_;
 
 TFKeyboardCalGui::TFKeyboardCalGui(QWidget* parent) : rviz::Panel(parent)
 { 
@@ -68,6 +62,9 @@ TFKeyboardCalGui::TFKeyboardCalGui(QWidget* parent) : rviz::Panel(parent)
   main_layout->addWidget(tab_widget_);
   setLayout(main_layout);
 
+  imarker_server_.reset(new interactive_markers::InteractiveMarkerServer("tf_keyboard_cal_imarkers", "", false));
+  ros::Duration(0.25).sleep();
+                        
   updateTabData(0);
 }
 
@@ -99,6 +96,9 @@ createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
   to_->setPlaceholderText("to TF");
   connect(to_, SIGNAL(textChanged(const QString &)), this, SLOT(toTextChanged(const QString &)));
 
+  add_imarker_ = new QCheckBox("i marker?", this);
+  add_imarker_->setCheckState(Qt::Unchecked);
+  
   create_tf_btn_ = new QPushButton(this);
   create_tf_btn_->setText("Create TF");
   connect(create_tf_btn_, SIGNAL(clicked()), this, SLOT(createNewTF()));
@@ -121,6 +121,10 @@ createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
   to_row->addWidget(to_label);
   to_row->addWidget(to_);
 
+  QHBoxLayout *create_row = new QHBoxLayout;
+  create_row->addWidget(add_imarker_);
+  create_row->addWidget(create_tf_btn_);
+  
   QHBoxLayout *remove_row = new QHBoxLayout;
   remove_row->addWidget(active_tfs_);
   remove_row->addWidget(remove_tf_btn_);
@@ -128,7 +132,7 @@ createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
   QVBoxLayout *add_controls = new QVBoxLayout;
   add_controls->addLayout(from_row);
   add_controls->addLayout(to_row);
-  add_controls->addWidget(create_tf_btn_);
+  add_controls->addLayout(create_row);
   add_section->setLayout(add_controls);
 
   QGroupBox *remove_section = new QGroupBox(tr("Remove TF"));
@@ -167,6 +171,14 @@ void createTFTab::createNewTF()
   new_tf.name_ = QString::fromStdString(text);
   active_tf_list_.push_back(new_tf);
 
+  // interactive marker
+  new_tf.imarker_ = false;
+  if (add_imarker_->isChecked())
+  {
+    new_tf.imarker_ = true;
+    createNewIMarker(new_tf);
+  }
+  
   // repopulate dropdown box
   active_tfs_->clear();
   for (std::size_t i = 0; i < active_tf_list_.size(); i++)
@@ -178,6 +190,89 @@ void createTFTab::createNewTF()
   remote_receiver_->createTF(new_tf.getTFMsg());
 
   updateFromList();  
+}
+
+void createTFTab::createNewIMarker(tf_data new_tf)
+{
+  ROS_DEBUG_STREAM_NAMED("createNewIMarker","creating interactive marker...");
+  
+  // create a box to visualize the marker
+  visualization_msgs::Marker marker;
+  marker.type = visualization_msgs::Marker::CUBE;
+  marker.scale.x = 0.1;
+  marker.scale.y = 0.1;
+  marker.scale.z = 0.1;
+  marker.color.r = 0.5;
+  marker.color.g = 0.5;
+  marker.color.b = 0.5;
+  marker.color.a = 1.0;
+
+  visualization_msgs::InteractiveMarker int_marker;
+  int_marker.header.frame_id = new_tf.from_;
+  int_marker.scale = 0.25;
+  int_marker.name = new_tf.name_.toStdString();
+
+  visualization_msgs::InteractiveMarkerControl box_control;
+  box_control.always_visible = true;
+  box_control.markers.push_back(marker);
+  box_control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_ROTATE_3D;
+  int_marker.controls.push_back(box_control);
+
+  // create the handles to control individual dofs
+  visualization_msgs::InteractiveMarkerControl control;
+  control.orientation.w = 1;
+  control.orientation.x = 1;
+  control.orientation.y = 0;
+  control.orientation.z = 0;
+  control.name = "rotate_x";
+  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::ROTATE_AXIS;
+  int_marker.controls.push_back(control);
+  control.name = "move_x";
+  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_AXIS;
+  int_marker.controls.push_back(control);
+
+  control.orientation.w = 1;
+  control.orientation.x = 0;
+  control.orientation.y = 1;
+  control.orientation.z = 0;
+  control.name = "rotate_y";
+  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::ROTATE_AXIS;
+  int_marker.controls.push_back(control);
+  control.name = "move_y";
+  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_AXIS;
+  int_marker.controls.push_back(control);
+
+  control.orientation.w = 1;
+  control.orientation.x = 0;
+  control.orientation.y = 0;
+  control.orientation.z = 1;
+  control.name = "rotate_z";
+  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::ROTATE_AXIS;
+  int_marker.controls.push_back(control);
+  control.name = "move_z";
+  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_AXIS;
+  int_marker.controls.push_back(control);
+  
+  imarker_server_->insert(int_marker);
+  imarker_server_->setCallback(int_marker.name, boost::bind( &createTFTab::processIMarkerFeedback, this, _1) );
+  imarker_server_->applyChanges();
+}
+
+void createTFTab::processIMarkerFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback)
+{
+  ROS_DEBUG_STREAM_NAMED("processIMarkerFeedback","Feedback from " << feedback->marker_name);
+
+  QString imarker_name = QString::fromStdString(feedback->marker_name);
+  
+  for (std::size_t i = 0; i < active_tf_list_.size(); i++)
+  {
+    if (active_tf_list_[i].name_ == imarker_name)
+    {
+      ROS_DEBUG_STREAM_NAMED("removeTF","update index = " << i);
+      manipulateTFTab::updateTFValues(feedback->pose);
+      break;
+    }
+  }  
 }
 
 void createTFTab::updateFromList()
@@ -500,6 +595,11 @@ void manipulateTFTab::incrementDOF(int dof, double sign)
 
   dof_qline_edits_[dof]->setText(QString::number(value));
   updateTFValues(dof, value);  
+}
+
+void manipulateTFTab::updateTFValues(int list_index, geometry_msgs::Pose pose)
+{
+  // TODO: update euler angles, change pose -> transformstamped, call remote_receiver_, update gui text
 }
 
 void manipulateTFTab::updateTFValues(int dof, double value)

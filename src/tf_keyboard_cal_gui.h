@@ -46,11 +46,22 @@
 #include <QtGui>
 #include <QPushButton>
 #include <QLabel>
+#include <QCheckBox>
 #include <QLineEdit>
 #include <QComboBox>
 #include <QFrame>
 #include <QDoubleValidator>
 #include <QDir>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QGroupBox>
+#include <QFileDialog>
+#include <QGridLayout>
+
+#include <tf/transform_datatypes.h>
+
+#include <interactive_markers/interactive_marker_server.h>
+#include <interactive_markers/menu_handler.h>
 
 #include <iostream>
 #include <fstream>
@@ -62,6 +73,7 @@ struct tf_data{
   std::size_t id_;
   std::string from_;
   std::string to_;
+  bool imarker_;
   QString name_;
   double values_[6];
 
@@ -87,6 +99,9 @@ protected Q_SLOTS:
   void toTextChanged(QString text);
   
 private:
+  void processIMarkerFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback);
+  void createNewIMarker(tf_data new_tf);
+  
   std::string from_tf_name_;
   std::string to_tf_name_;
 
@@ -95,6 +110,8 @@ private:
   QComboBox *from_;
   QLineEdit *to_;
 
+  QCheckBox *add_imarker_;
+  
   QPushButton *create_tf_btn_;
   QPushButton *remove_tf_btn_;
 
@@ -113,7 +130,8 @@ class manipulateTFTab : public QWidget
 public:
   explicit manipulateTFTab(QWidget *parent = 0);
   void updateTFList();
-                     
+  static void updateTFValues(int list_index, geometry_msgs::Pose pose);
+                                                    
 protected Q_SLOTS:
   void incrementDOF();
   void incrementDOF(int dof, double sign);
@@ -129,6 +147,8 @@ protected Q_SLOTS:
   void setQLineValues(int item_id);
 
 protected:
+  
+  
   void keyPressEvent(QKeyEvent *);
   // TODO: Don't think I need release...
   // void keyReleaseEvent(QKeyEvent *); 
