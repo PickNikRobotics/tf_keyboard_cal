@@ -269,7 +269,8 @@ void createTFTab::processIMarkerFeedback(const visualization_msgs::InteractiveMa
     if (active_tf_list_[i].name_ == imarker_name)
     {
       ROS_DEBUG_STREAM_NAMED("removeTF","update index = " << i);
-      manipulateTFTab::updateTFValues(feedback->pose);
+      manipulateTFTab::updateTFValues(i, feedback->pose);
+      remote_receiver_->updateTF(active_tf_list_[i].getTFMsg());
       break;
     }
   }  
@@ -553,8 +554,7 @@ void manipulateTFTab::setQLineValues(int item_id)
       }
       break;
     }
-  }
-  
+  }  
 }
 
 void manipulateTFTab::updateTFList()
@@ -597,9 +597,22 @@ void manipulateTFTab::incrementDOF(int dof, double sign)
   updateTFValues(dof, value);  
 }
 
-void manipulateTFTab::updateTFValues(int list_index, geometry_msgs::Pose pose)
+void manipulateTFTab::updateTFValues(int idx, geometry_msgs::Pose pose)
 {
   // TODO: update euler angles, change pose -> transformstamped, call remote_receiver_, update gui text
+  active_tf_list_[idx].values_[0] = pose.position.x;
+  active_tf_list_[idx].values_[1] = pose.position.y;
+  active_tf_list_[idx].values_[2] = pose.position.z;
+
+  double rad_to_deg = 180.0 / 3.14159265;
+  
+  Eigen::Quaterniond eigen_quaternion;
+  tf::quaternionMsgToEigen(pose.orientation, eigen_quaternion);
+  Eigen::Vector3d euler_angles = eigen_quaternion.toRotationMatrix().eulerAngles(2, 1, 0);
+  ROS_DEBUG_STREAM_NAMED("updateTFValues","euler_angles = " << euler_angles.transpose());
+  active_tf_list_[idx].values_[3] = euler_angles[0] * rad_to_deg;
+  active_tf_list_[idx].values_[4] = euler_angles[1] * rad_to_deg;
+  active_tf_list_[idx].values_[5] = euler_angles[2] * rad_to_deg;
 }
 
 void manipulateTFTab::updateTFValues(int dof, double value)

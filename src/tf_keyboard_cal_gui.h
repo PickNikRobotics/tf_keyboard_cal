@@ -63,6 +63,9 @@
 #include <interactive_markers/interactive_marker_server.h>
 #include <interactive_markers/menu_handler.h>
 
+#include <Eigen/Geometry>
+#include <eigen_conversions/eigen_msg.h>
+
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
