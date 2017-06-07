@@ -175,6 +175,7 @@ void createTFTab::createNewTF()
   new_tf.imarker_ = false;
   if (add_imarker_->isChecked())
   {
+    ROS_DEBUG_STREAM_NAMED("createNewTF","imarker = true");
     new_tf.imarker_ = true;
     createNewIMarker(new_tf);
   }
@@ -627,7 +628,22 @@ void manipulateTFTab::updateTFValues(int dof, double value)
       {
         ROS_DEBUG_STREAM_NAMED("updateTFValues", j << " = " << active_tf_list_[i].values_[j]);
       }
-      remote_receiver_->updateTF(active_tf_list_[i].getTFMsg());
+
+      geometry_msgs::TransformStamped tf_msg = active_tf_list_[i].getTFMsg();
+      
+      if (active_tf_list_[i].imarker_)
+      {
+        ROS_DEBUG_STREAM_NAMED("updateTFValues","update imarker pose...");
+        geometry_msgs::Pose imarker_pose;
+        imarker_pose.position.x = tf_msg.transform.translation.x;
+        imarker_pose.position.y = tf_msg.transform.translation.y;
+        imarker_pose.position.z = tf_msg.transform.translation.z;
+        imarker_pose.orientation = tf_msg.transform.rotation;
+        imarker_server_->setPose(active_tf_list_[i].name_.toStdString(), imarker_pose);
+        imarker_server_->applyChanges();
+      }
+      
+      remote_receiver_->updateTF(tf_msg);
       break;
     }
   }
