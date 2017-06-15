@@ -169,16 +169,16 @@ void createTFTab::createNewTF()
   }
   std::string text = std::to_string(new_tf.id_) + ": " + new_tf.from_ + "-" + new_tf.to_;
   new_tf.name_ = QString::fromStdString(text);
-  active_tf_list_.push_back(new_tf);
 
   // interactive marker
   new_tf.imarker_ = false;
   if (add_imarker_->isChecked())
   {
-    ROS_DEBUG_STREAM_NAMED("createNewTF","imarker = true");
     new_tf.imarker_ = true;
+    ROS_DEBUG_STREAM_NAMED("createNewTF","imarker = " << new_tf.imarker_);
     createNewIMarker(new_tf);
   }
+  active_tf_list_.push_back(new_tf);
   
   // repopulate dropdown box
   active_tfs_->clear();
@@ -630,7 +630,7 @@ void manipulateTFTab::updateTFValues(int dof, double value)
       }
 
       geometry_msgs::TransformStamped tf_msg = active_tf_list_[i].getTFMsg();
-      
+      ROS_DEBUG_STREAM_NAMED("updateTFValues","imarker_ = " << active_tf_list_[i].imarker_);
       if (active_tf_list_[i].imarker_)
       {
         ROS_DEBUG_STREAM_NAMED("updateTFValues","update imarker pose...");
