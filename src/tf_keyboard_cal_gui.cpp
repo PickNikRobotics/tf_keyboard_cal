@@ -43,6 +43,7 @@ namespace tf_keyboard_cal
 std::vector< tf_data > active_tf_list_;
 
 boost::shared_ptr<interactive_markers::InteractiveMarkerServer> imarker_server_;
+interactive_markers::MenuHandler imarker_menu_handler_;
 
 TFKeyboardCalGui::TFKeyboardCalGui(QWidget* parent) : rviz::Panel(parent)
 { 
@@ -82,7 +83,8 @@ void TFKeyboardCalGui::updateTabData(int index)
 
 createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
 {
-
+  menu_handler_set_ = false;
+  
   // TF controls
   QLabel *from_label = new QLabel(tr("from:"));
   QLabel *to_label = new QLabel(tr("to:"));
@@ -98,6 +100,9 @@ createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
 
   add_imarker_ = new QCheckBox("i marker?", this);
   add_imarker_->setCheckState(Qt::Unchecked);
+
+  add_imarker_menu_ = new QCheckBox("menus?", this);
+  add_imarker_menu_->setCheckState(Qt::Unchecked); 
   
   create_tf_btn_ = new QPushButton(this);
   create_tf_btn_->setText("Create TF");
@@ -123,6 +128,7 @@ createTFTab::createTFTab(QWidget *parent) : QWidget(parent)
 
   QHBoxLayout *create_row = new QHBoxLayout;
   create_row->addWidget(add_imarker_);
+  create_row->addWidget(add_imarker_menu_);
   create_row->addWidget(create_tf_btn_);
   
   QHBoxLayout *remove_row = new QHBoxLayout;
@@ -176,7 +182,7 @@ void createTFTab::createNewTF()
   {
     new_tf.imarker_ = true;
     ROS_DEBUG_STREAM_NAMED("createNewTF","imarker = " << new_tf.imarker_);
-    createNewIMarker(new_tf);
+    createNewIMarker(new_tf, add_imarker_menu_->isChecked());
   }
   active_tf_list_.push_back(new_tf);
   
@@ -193,7 +199,7 @@ void createTFTab::createNewTF()
   updateFromList();  
 }
 
-void createTFTab::createNewIMarker(tf_data new_tf)
+void createTFTab::createNewIMarker(tf_data new_tf, bool has_menu)
 {
   ROS_DEBUG_STREAM_NAMED("createNewIMarker","creating interactive marker...");
   
@@ -256,6 +262,47 @@ void createTFTab::createNewIMarker(tf_data new_tf)
   
   imarker_server_->insert(int_marker);
   imarker_server_->setCallback(int_marker.name, boost::bind( &createTFTab::processIMarkerFeedback, this, _1) );
+  
+  if (has_menu && !menu_handler_set_)
+  {
+    ROS_DEBUG_STREAM_NAMED("createNewIMarker","set menu");
+
+    QString filters("rviz tf files (*.tf);;All files (*.*)");
+    QString default_filter("rviz tf files (*.tf)");
+  
+    QString directory =
+      QFileDialog::getOpenFileName(0, "Load TF Menu File", QDir::currentPath(), filters, &default_filter);
+
+    std::string full_load_path;
+    full_load_path = directory.toStdString();
+    ROS_DEBUG_STREAM_NAMED("load","load_file = " << full_load_path);
+
+    std::ifstream in_file(full_load_path);
+    std::string line;
+    int result;
+    int level;
+    char name[256];
+    std::string menu_name(name);
+    
+    if (in_file.is_open())
+    {
+      while (std::getline(in_file, line))
+      {
+        ROS_DEBUG_STREAM_NAMED("createNewIMarker",line);
+        result = sscanf(line.c_str(), "%d, %[^\t\n]s", &level, name);
+        ROS_DEBUG_STREAM_NAMED("createNewIMarker","result = " << result);
+        if (result == 2)
+        {
+          std::string menu_name(name);
+          if (level == 1)
+            imarker_menu_handler_.insert(name, boost::bind(&createTFTab::processIMarkerFeedback, this, _1));
+        }
+      }
+    }
+    imarker_menu_handler_.apply(*imarker_server_, int_marker.name);
+    menu_handler_set_ = true;
+  }
+  
   imarker_server_->applyChanges();
 }
 
@@ -723,8 +770,8 @@ saveLoadTFTab::saveLoadTFTab(QWidget *parent) : QWidget(parent)
 
 void saveLoadTFTab::load()
 {
-  QString filters("rviz tf files (*.rviztf);;All files (*.*)");
-  QString default_filter("rviz tf files (*.rviztf)");
+  QString filters("rviz tf files (*.tf);;All files (*.*)");
+  QString default_filter("rviz tf files (*.tf)");
   
   QString directory =
     QFileDialog::getOpenFileName(0, "Load TF File", QDir::currentPath(), filters, &default_filter);
@@ -794,8 +841,8 @@ void saveLoadTFTab::load()
 
 void saveLoadTFTab::save()
 {
-  QString filters("rviz tf files (*.rviztf);;All files (*.*)");
-  QString default_filter("rviz tf files (*.rviztf)");
+  QString filters("rviz tf files (*.tf);;All files (*.*)");
+  QString default_filter("rviz tf files (*.tf)");
   
   QString directory =
     QFileDialog::getSaveFileName(0, "Save TF File", QDir::currentPath(), filters, &default_filter);
@@ -805,7 +852,7 @@ void saveLoadTFTab::save()
   // check if user specified file extension
   std::size_t found = full_save_path_.find(".");
   if (found == std::string::npos)
-    full_save_path_ += ".rviztf";
+    full_save_path_ += ".tf";
   
   ROS_DEBUG_STREAM_NAMED("save","save_file = " << full_save_path_);
 
@@ -834,7 +881,6 @@ void saveLoadTFTab::save()
   {
     ROS_ERROR_STREAM_NAMED("save","Unable to open file: " << full_save_path_);
   }
-  
 }
 
 } // end namespace tf_keyboard_cal

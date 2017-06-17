@@ -103,7 +103,9 @@ protected Q_SLOTS:
   
 private:
   void processIMarkerFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback);
-  void createNewIMarker(tf_data new_tf);
+  void createNewIMarker(tf_data new_tf, bool has_menu);
+
+  bool menu_handler_set_;
   
   std::string from_tf_name_;
   std::string to_tf_name_;
@@ -114,6 +116,7 @@ private:
   QLineEdit *to_;
 
   QCheckBox *add_imarker_;
+  QCheckBox *add_imarker_menu_;
   
   QPushButton *create_tf_btn_;
   QPushButton *remove_tf_btn_;
