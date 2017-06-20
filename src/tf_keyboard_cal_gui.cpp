@@ -269,9 +269,11 @@ void createTFTab::createNewIMarker(tf_data new_tf, bool has_menu)
 
     QString filters("rviz tf files (*.tf);;All files (*.*)");
     QString default_filter("rviz tf files (*.tf)");
-  
+
+    std::string pkg_path = ros::package::getPath("tf_keyboard_cal");
+    
     QString directory =
-      QFileDialog::getOpenFileName(0, "Load TF Menu File", QDir::currentPath(), filters, &default_filter);
+      QFileDialog::getOpenFileName(0, "Load TF Menu File", QString::fromStdString(pkg_path), filters, &default_filter);
 
     std::string full_load_path;
     full_load_path = directory.toStdString();
@@ -279,28 +281,49 @@ void createTFTab::createNewIMarker(tf_data new_tf, bool has_menu)
 
     std::ifstream in_file(full_load_path);
     std::string line;
-    int result;
-    int level;
-    char name[256];
-    std::string menu_name(name);
-    
+
+    // std::string menu_name(name);
+
     if (in_file.is_open())
     {
       while (std::getline(in_file, line))
-      {
-        ROS_DEBUG_STREAM_NAMED("createNewIMarker",line);
-        result = sscanf(line.c_str(), "%d, %[^\t\n]s", &level, name);
-        ROS_DEBUG_STREAM_NAMED("createNewIMarker","result = " << result);
+      { 
+        // skip comments
+        boost::trim(line);
+        if (line.find("#") != std::string::npos)
+        {
+           continue;
+        }
+        
+        int result;
+        int num_sub_menus;
+        char menu_name[256];
+        
+        result = sscanf(line.c_str(), "%d, %[^\t\n\r]s", &num_sub_menus, menu_name);
+
         if (result == 2)
         {
-          std::string menu_name(name);
-          if (level == 1)
-            imarker_menu_handler_.insert(name, boost::bind(&createTFTab::processIMarkerFeedback, this, _1));
+          ROS_DEBUG_STREAM_NAMED("createNewIMarker","create main item: " << menu_name);
+        }
+        else
+        {
+          ROS_WARN_STREAM_NAMED("createNewIMarker","skipping mal formed line: " << line);
+        }
+        
+        for (int i = 0; i < num_sub_menus; i++)
+        {
+          std::getline(in_file, line);
+          result = sscanf(line.c_str(), "%[^\t\n\r]s", menu_name);
+          
+          if (result == 1)
+          {
+            ROS_DEBUG_STREAM_NAMED("createNewIMarker","create sub menu: " << menu_name);
+          }
         }
       }
     }
-    imarker_menu_handler_.apply(*imarker_server_, int_marker.name);
-    menu_handler_set_ = true;
+    // imarker_menu_handler_.apply(*imarker_server_, int_marker.name);
+    // menu_handler_set_ = true;
   }
   
   imarker_server_->applyChanges();
@@ -408,13 +431,11 @@ void createTFTab::removeTF()
 void createTFTab::fromTextChanged(QString text)
 {
   from_tf_name_ = text.toStdString();
-  ROS_DEBUG_STREAM_NAMED("fromTextChanged","from: " << from_tf_name_); 
 }
 
 void createTFTab::toTextChanged(QString text)
 {
   to_tf_name_ = text.toStdString();
-  ROS_DEBUG_STREAM_NAMED("toTextChanged","to: " << to_tf_name_);
 }
 
 manipulateTFTab::manipulateTFTab(QWidget *parent) : QWidget(parent)

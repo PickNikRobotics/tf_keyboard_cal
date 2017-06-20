@@ -37,6 +37,7 @@
 
 #ifndef Q_MOC_RUN
 #include <ros/ros.h>
+#include <ros/package.h>
 #include <rviz/panel.h>
 #endif
 
@@ -67,8 +68,11 @@
 #include <eigen_conversions/eigen_msg.h>
 
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <stdio.h>
+
+#include <boost/algorithm/string.hpp>
 
 namespace tf_keyboard_cal
 {
