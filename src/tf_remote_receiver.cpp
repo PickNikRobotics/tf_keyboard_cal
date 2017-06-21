@@ -70,4 +70,37 @@ std::vector<std::string> TFRemoteReceiver::getTFNames()
   return tf_names_;
 }
 
+void TFRemoteReceiver::addIMarkerMenuPub(int menu_index, std::string menu_name)
+{
+  // replace ' ' with '_'
+  for (std::size_t i = 0; i < menu_name.size(); i++)
+  {
+    if (menu_name[i] == ' ')
+      menu_name[i] = '_';
+  }
+
+  
+  std::string new_topic_name = "/imarker/" + menu_name;
+  ros::Publisher new_pub = nh_.advertise<std_msgs::Bool>(new_topic_name, 1);
+
+  std::pair<int, ros::Publisher> new_menu_pub(menu_index, new_pub);
+  menu_pubs_.push_back(new_menu_pub);
+}
+
+void TFRemoteReceiver::publishIMarkerMenuSelection(int menu_index)
+{
+  std_msgs::Bool msg;
+  msg.data = true;
+
+  for (std::size_t i = 0; i < menu_pubs_.size(); i++)
+  {
+    if (menu_pubs_[i].first == menu_index)
+    {
+      menu_pubs_[i].second.publish(msg);
+      break;
+    }
+  }
+}
+
+
 } // end namespace tf_keyboard_cal

@@ -108,7 +108,7 @@ protected Q_SLOTS:
 private:
   void processIMarkerFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback);
   void createNewIMarker(tf_data new_tf, bool has_menu);
-
+  
   bool menu_handler_set_;
   
   std::string from_tf_name_;

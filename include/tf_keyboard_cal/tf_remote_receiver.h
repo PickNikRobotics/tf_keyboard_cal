@@ -39,6 +39,7 @@
 #include <Eigen/Core>
 #include <tf2_msgs/TFMessage.h>
 #include <tf2_ros/transform_listener.h>
+#include <std_msgs/Bool.h>
 
 namespace tf_keyboard_cal
 {
@@ -56,7 +57,8 @@ public:
   void createTF(geometry_msgs::TransformStamped create_tf_msg);
   void removeTF(geometry_msgs::TransformStamped remove_tf_msg);
   void updateTF(geometry_msgs::TransformStamped update_tf_msg);
-
+  void addIMarkerMenuPub(int menu_index, std::string menu_name);
+  void publishIMarkerMenuSelection(int menu_index);
   
   std::vector<std::string> getTFNames();
   
@@ -71,7 +73,9 @@ private:
 
   std::vector< std::string > tf_names_;
 
-    tf2_ros::Buffer tf_buffer_;
+  std::vector< std::pair<int, ros::Publisher> > menu_pubs_;
+  
+  tf2_ros::Buffer tf_buffer_;
   tf2_ros::TransformListener *tf_listener_;
   
 }; // end class TFRemoteReceiver

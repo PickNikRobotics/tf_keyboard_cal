@@ -15,3 +15,10 @@ There seems to be a disconnect between the values of the imarker and the active 
 ### Fix
 
 Seems that `active_tf_list_.push_back(new_tf)` was being called before `.imarker_ = true` was called. This appears to have solved the errors.
+
+## 3. Large Decimals
+
+On the `manipulate` tab, dragging the interactive marker causes large decimals. Need to display these only to 2 or 3 significant digits.
+
+## 4. When `has menu` is ticked, tick `imarker` checkbox.
+

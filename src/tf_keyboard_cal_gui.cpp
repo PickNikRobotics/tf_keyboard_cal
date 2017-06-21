@@ -281,6 +281,7 @@ void createTFTab::createNewIMarker(tf_data new_tf, bool has_menu)
 
     std::ifstream in_file(full_load_path);
     std::string line;
+    int menu_idx = 1;
 
     // std::string menu_name(name);
 
@@ -298,12 +299,31 @@ void createTFTab::createNewIMarker(tf_data new_tf, bool has_menu)
         int result;
         int num_sub_menus;
         char menu_name[256];
+        std::string menu_str;
+        std::string sub_menu_str;
+        
+        interactive_markers::MenuHandler::EntryHandle sub_menu_handle;
         
         result = sscanf(line.c_str(), "%d, %[^\t\n\r]s", &num_sub_menus, menu_name);
 
         if (result == 2)
         {
-          ROS_DEBUG_STREAM_NAMED("createNewIMarker","create main item: " << menu_name);
+
+          if (num_sub_menus == 0)
+          {
+            //ROS_DEBUG_STREAM_NAMED("createNewIMarker","create main item: " << menu_idx << ", " << menu_name);
+            imarker_menu_handler_.insert(menu_name, boost::bind( &createTFTab::processIMarkerFeedback, this, _1));
+            menu_str = menu_name;
+            remote_receiver_->addIMarkerMenuPub(menu_idx, menu_str); 
+            menu_idx++;
+          }
+          else
+          {
+            //ROS_DEBUG_STREAM_NAMED("createNewIMarker","create sub menu: " << menu_idx << ", " << menu_name);
+            sub_menu_handle = imarker_menu_handler_.insert(menu_name);
+            menu_str = menu_name;
+            menu_idx++;
+          }
         }
         else
         {
@@ -317,14 +337,20 @@ void createTFTab::createNewIMarker(tf_data new_tf, bool has_menu)
           
           if (result == 1)
           {
-            ROS_DEBUG_STREAM_NAMED("createNewIMarker","create sub menu: " << menu_name);
+            //ROS_DEBUG_STREAM_NAMED("createNewIMarker","create sub menu: " << menu_idx << ", " << menu_name);
+            imarker_menu_handler_.insert(sub_menu_handle, menu_name, boost::bind( &createTFTab::processIMarkerFeedback, this, _1));
+            sub_menu_str = menu_name;
+            remote_receiver_->addIMarkerMenuPub(menu_idx, menu_str + "_" + sub_menu_str);
+            menu_idx++;
           }
         }
       }
-    }
-    // imarker_menu_handler_.apply(*imarker_server_, int_marker.name);
-    // menu_handler_set_ = true;
+    }  
+    menu_handler_set_ = true;
   }
+
+  if (has_menu)
+    imarker_menu_handler_.apply(*imarker_server_, int_marker.name);
   
   imarker_server_->applyChanges();
 }
@@ -339,12 +365,17 @@ void createTFTab::processIMarkerFeedback(const visualization_msgs::InteractiveMa
   {
     if (active_tf_list_[i].name_ == imarker_name)
     {
-      ROS_DEBUG_STREAM_NAMED("removeTF","update index = " << i);
+      ROS_DEBUG_STREAM_NAMED("processIMarkerFeedback","update index = " << i);
       manipulateTFTab::updateTFValues(i, feedback->pose);
       remote_receiver_->updateTF(active_tf_list_[i].getTFMsg());
       break;
     }
-  }  
+  }
+
+  if (feedback->event_type == visualization_msgs::InteractiveMarkerFeedback::MENU_SELECT)
+  {
+    remote_receiver_->publishIMarkerMenuSelection(feedback->menu_entry_id);
+  }
 }
 
 void createTFTab::updateFromList()
