@@ -1,24 +1,18 @@
-# NEW BRANCH
-
-```
-roslaunch tf_keyboard_cal rviz_demo.launch
-```
-
-In `rviz` add the tf panel by: `Panel -> Add New Panel ->TFKeyboardCalGUI`
-
-
-
 # Manual TF Calibration Tools
 
-Move /tf frames around using your keyboard or interactive markers - a simple calibration-by-eye tool!
+Description: Move /tf frames around using your keyboard, an Rviz GUI, or interactive markers - a simple calibration-by-eye tool!
 
-TF Keyboard Calibration developed by Andy McEvoy and [Dave Coleman](http://dav.ee/) at the University of Colorado Boulder, TF Interactive Marker developed by [Sammy Pfeiffer](http://github.com/awesomebytes) at PAL Robotics.
+Features:
+
+ - Integrated Rviz panel with multiple calibration approaches
+
+TF Keyboard Calibration developed by Andy McEvoy, [Dave Coleman](http://dav.ee/), and [Sammy Pfeiffer](http://github.com/awesomebytes) at the University of Colorado Boulder, PAL Robotics, MDA US Systems, and PickNik LLC.
 
 Status:
 
- * [![Build Status](https://travis-ci.org/davetcoleman/tf_keyboard_cal.svg)](https://travis-ci.org/davetcoleman/tf_keyboard_cal) Travis CI
- * [![Devel Job Status](http://jenkins.ros.org/buildStatus/icon?job=devel-indigo-tf_keyboard_cal)](http://jenkins.ros.org/job/devel-indigo-tf_keyboard_cal) Devel Job Status
- * [![Build Status](http://jenkins.ros.org/buildStatus/icon?job=ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64)](http://jenkins.ros.org/job/ros-indigo-tf-keyboard-cal_binarydeb_trusty_amd64/) AMD64 Debian Job Status
+ * [![Build Status](https://travis-ci.org/davetcoleman/tf_manual_cal.svg)](https://travis-ci.org/davetcoleman/tf_manual_cal) Travis - Continuous Integration
+ * [![Build Status](http://build.ros.org/buildStatus/icon?job=Kbin_uX64__tf_manual_cal__ubuntu_xenial_amd64__binary)](http://build.ros.org/view/Kbin_uX64/job/Kbin_uX64__tf_manual_cal__ubuntu_xenial_amd64__binary/) ROS Buildfarm - AMD64 Xenial Debian Build
+ * [![Build Status](http://build.ros.org/buildStatus/icon?job=Kdev__tf_manual_cal__ubuntu_xenial_amd64)](http://build.ros.org/view/Kdev/job/Kdev__tf_manual_cal__ubuntu_xenial_amd64/) ROS Buildfarm - AMD64 Xenial Devel Build
 
 ![](resources/keyboard_screenshot.png)
 
@@ -34,29 +28,29 @@ Screenshot of calibration using interactive markers and the mouse
 
 ### Ubuntu Debian
 
-    sudo apt-get install ros-indigo-tf-keyboard-cal
+> Note: this package has not been released yet
+
+    sudo apt-get install ros-kinetic-tf-manual-cal
 
 ### Build from Source
 
 To build this package, ``git clone`` this repo into a [catkin workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) and be sure to install necessary dependencies by running the following command in the root of your catkin workspace:
 
-    rosdep install -y --from-paths src --ignore-src --rosdistro indigo
+    rosdep install -y --from-paths src --ignore-src --rosdistro kinetic
 
 ## Code API
 
-See [Class Reference](http://docs.ros.org/indigo/api/tf_keyboard_cal/html/)
+> Note: this package has not been released yet
 
-## Usage of TF Keyboard Cal:
+See [Class Reference](http://docs.ros.org/kinetic/api/tf_manual_cal/html/)
 
-To test, create a new ``/thing`` coordinate from the following demo:
+## Usage of TF Manual Cal:
 
-    roslaunch tf_keyboard_cal tf_keyboard_world_to_thing.launch
-
-Start Rviz and use the TF display to visualize its effect.
+Start the demo:
 
     roslaunch tf_keyboard_cal rviz_demo.launch
 
-You can now use the keyboard shorcuts below to move the frame around. **NOTE:** Be sure to have the little black window focused on to recieve keyboard input. Once the TF has been positioned, press `p` to save the settings to the config file. The TF will use these new settings when relaunched.
+You can now use the keyboard shorcuts below to move the frame around:
 
     Manual alignment of camera to world CS:
     =======================================
@@ -71,39 +65,12 @@ You can now use the keyboard shorcuts below to move the frame around. **NOTE:** 
 
 Create a launch file and configuration file similar to the demos in the package's ``config/`` and ``launch/`` folders.
 
-
-## Usage of TF Interactive Marker
-
-Interactive marker /tf calibration is implemented in an entirely seperate python node from the keyboard functionality and it is self contained. You can copy ``tf_interactive_marker.py`` and it will work in a standalone fashion. Use ``-h`` to get help on this node's various command line arguments.
-
-To test, first run Rviz:
-
-    roslaunch tf_keyboard_cal rviz_demo.launch
-
-Next run the following demo to create a ``/thing`` tf:
-
-    roslaunch tf_keyboard_cal tf_im_world_to_thing.launch
-
-Now you should be able to move the Interactive Marker and the TF transform will be published (can be stopped with right click menu of the IM) and you'll see an output in the terminal like:
-
-````
-Static transform publisher command (with roll pitch yaw):
-  rosrun tf static_transform_publisher 1.0 0.0 1.0 0.0 -0.0 1.57 base_footprint new_frame 50
-
-Static transform publisher command (with quaternion):
-  rosrun tf static_transform_publisher 1.0 0.0 1.0 0.0 0.7068 0.7074 0.0 base_footprint new_frame 50
-
-Roslaunch line of static transform publisher (rpy):
-  <node name="from_base_footprint_to_new_frame_static_tf" pkg="tf" type="static_transform_publisher" args="1.0 0.0 1.0 0.0 -0.0 1.57 base_footprint new_frame 50" />
-
-URDF format:
-  <origin xyz="1.0 0.0 1.0" rpy="0.0 -0.0 1.57" />
-````
-
-Which hopefully makes your life easier :-)
-
 ## Demo TF Listener
 
 If you want to get the Eigen or ROS message formatted pose from the interactive marker or keyboard calibration, see the template code:
 
-    src/demo_tf_listener.cpp1;2802;0c
+    src/demo_tf_listener.cpp
+
+## Contribute
+
+Please send PRs for new helper functions, fixes, etc!
