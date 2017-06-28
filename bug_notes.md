@@ -22,3 +22,6 @@ On the `manipulate` tab, dragging the interactive marker causes large decimals. 
 
 ## 4. When `has menu` is ticked, tick `imarker` checkbox.
 
+## 5. Multiple TFs with same name
+
+Need to not allow user to create multiple TFs with same `to` and `from`, or create loops in TF tree. 

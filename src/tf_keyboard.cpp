@@ -47,17 +47,12 @@ int main(int argc, char** argv)
   ros::AsyncSpinner spinner(4);
   spinner.start();
 
-  //tf_keyboard_cal::ManualTFAlignment tf_align;
   tf_keyboard_cal::RvizTFPublisher tf_pub;
-  //tf_align.printMenu();
 
   ros::Rate rate(30.0); // hz
   while ( ros::ok() )
   {
-    // publish transform to camera
-    //tf_align.publishTF();
     tf_pub.publishTFs();
-
     rate.sleep();
   }
 

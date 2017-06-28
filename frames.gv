@@ -1,8 +1,0 @@
-digraph G {
-"world" -> "B"[label="Broadcaster: /tf_keyboard\nAverage rate: 30.203 Hz\nMost recent transform: 1495135847.188 ( 0.004 sec old)\nBuffer length: 4.933 sec\n"];
-"base" -> "world"[label="Broadcaster: /my_tf\nAverage rate: 10.181 Hz\nMost recent transform: 1495135847.260 ( -0.067 sec old)\nBuffer length: 4.813 sec\n"];
-edge [style=invis];
- subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
-"Recorded at time: 1495135847.193"[ shape=plaintext ] ;
- }->"base";
-}

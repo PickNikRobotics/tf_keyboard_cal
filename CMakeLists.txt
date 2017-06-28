@@ -117,82 +117,12 @@ target_link_libraries(${PROJECT_NAME}
   ${PROJECT_NAME}_rviz_publisher
   ${catkin_LIBRARIES})
 
-# Library
-# add_library(${PROJECT_NAME}_manual_tf_alignment
-#   src/manual_tf_alignment.cpp
-# )
-# target_link_libraries(${PROJECT_NAME}_manual_tf_alignment
-#   ${catkin_LIBRARIES}
-#   ${Boost_LIBRARIES}
-# )
-
-# Library
-# add_library(${PROJECT_NAME}_imarker_simple
-#   src/imarker_simple.cpp
-# )
-# target_link_libraries(${PROJECT_NAME}_imarker_simple
-#   ${catkin_LIBRARIES}
-#   ${Boost_LIBRARIES}
-# )
-
-# Executable
-# add_executable(${PROJECT_NAME}
-#   src/tf_keyboard.cpp
-# )
-# target_link_libraries(${PROJECT_NAME}
-#   ${PROJECT_NAME}_manual_tf_alignment
-#   ${catkin_LIBRARIES}
-# )
-
-# Executable
-# add_executable(${PROJECT_NAME}_demo_tf_listener
-#   src/demo_tf_listener.cpp
-# )
-# # Rename C++ executable without namespace
-# set_target_properties(${PROJECT_NAME}_demo_tf_listener
-#   PROPERTIES OUTPUT_NAME demo_tf_listener PREFIX "")
-# # Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_demo_tf_listener
-#   ${catkin_LIBRARIES}
-# )
-
-
-
 #############
 ## Testing ##
 #############
 
 ## Test for correct C++ source code
 roslint_cpp()
-
-#############
-## Install ##
-#############
-
-# # Install libraries
-# install(TARGETS ${PROJECT_NAME}_manual_tf_alignment ${PROJECT_NAME}_imarker_simple
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
-
-# # Install header files
-# install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
-
-# # Install executables
-# install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_demo_tf_listener
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-# # Install scripts
-# install(PROGRAMS
-#   scripts/tf_interactive_marker.py
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-# # Install launch files
-# install(DIRECTORY
-#   launch
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
 
 #############
 ## Install ##
