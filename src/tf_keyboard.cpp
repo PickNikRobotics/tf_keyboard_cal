@@ -36,25 +36,23 @@
   Desc  : Tweak a TF transform using a keyboard
 */
 
-#include <tf_keyboard_cal/manual_tf_alignment.h>
+// #include <tf_keyboard_cal/manual_tf_alignment.h>
+#include <tf_keyboard_cal/rviz_tf_publisher.h>
 
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "tf_keyboard");
   ROS_INFO_STREAM_NAMED("tf_keyboard","Starting keyboard control");
 
-  ros::AsyncSpinner spinner(2);
+  ros::AsyncSpinner spinner(4);
   spinner.start();
 
-  tf_keyboard_cal::ManualTFAlignment tf_align;
-  tf_align.printMenu();
+  tf_keyboard_cal::RvizTFPublisher tf_pub;
 
   ros::Rate rate(30.0); // hz
   while ( ros::ok() )
   {
-    // publish transform to camera
-    tf_align.publishTF();
-
+    tf_pub.publishTFs();
     rate.sleep();
   }
 
