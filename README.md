@@ -100,5 +100,6 @@ If you want to get the Eigen or ROS message formatted pose from the interactive 
     
 ## FOR ROS KINETIC
 
-  Recommended package tf_visual
+  Recommended package tf_visual_tools
+  
   https://github.com/mcevoyandy/tf_visual_tools
