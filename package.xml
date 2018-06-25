@@ -10,17 +10,19 @@
   <license>BSD</license>
 
   <url type="website">https://github.com/davetcoleman/tf_keyboard_cal</url>
-  <url type="butracker">https://github.com/davetcoleman/tf_keyboard_cal/issues</url>
+  <url type="bugtracker">https://github.com/davetcoleman/tf_keyboard_cal/issues</url>
   <url type="repository">https://github.com/davetcoleman/tf_keyboard_cal/</url>
 
   <author email="davetcoleman@gmail.com">Dave Coleman</author>
   <author email="mcevoy.andy@gmail.com">Andy McEvoy</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <depend>keyboard</depend>
+  <!-- <depend>keyboard</depend> -->
+  <depend>rviz</depend>
   <depend>rviz_visual_tools</depend>
   <depend>roscpp</depend>
   <depend>tf2</depend>
+  <depend>tf2_msgs</depend>
   <depend>tf</depend>
   <depend>roslib</depend>
   <depend>rosparam_shortcuts</depend>
@@ -28,7 +30,12 @@
   <depend>roslint</depend>
   <depend>tf_conversions</depend>
   <depend>interactive_markers</depend>
+  <depend>message_generation</depend>
+  <depend>message_runtime</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
 
   <export>
+    <rviz plugin="${prefix}/plugin_description.xml"/>
   </export>
 </package>

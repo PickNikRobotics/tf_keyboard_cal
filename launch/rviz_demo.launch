@@ -1,6 +1,11 @@
 <launch>
-
+  
   <!-- start rviz -->
-  <node name="$(anon rviz)" pkg="rviz" type="rviz" args="-d $(find tf_keyboard_cal)/launch/rviz_demo.rviz"/>
+  <node name="$(anon rviz)" pkg="rviz" type="rviz" args="-d $(find tf_keyboard_cal)/launch/rviz_demo.rviz" output="screen"/>
 
+  <!-- static transform to robot base -->
+  <!-- <node pkg="tf" type="static_transform_publisher" name="my_tf" args="0 0 0 0 0 0 /base /world 100"/> -->
+
+  <node pkg="tf_keyboard_cal" type="tf_keyboard_cal" name="rviz_tfs" output="screen" />
+  
 </launch>
