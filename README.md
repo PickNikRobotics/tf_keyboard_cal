@@ -2,6 +2,14 @@
 
 Move /tf frames around using your keyboard or interactive markers - a simple calibration-by-eye tool!
 
+## For users with ROS KINETIC..
+
+  .. please refer to the package **tf_visual_tools** (source code link below)
+  
+  https://github.com/mcevoyandy/tf_visual_tools
+
+
+
 TF Keyboard Calibration developed by Andy McEvoy and [Dave Coleman](http://dav.ee/) at the University of Colorado Boulder, TF Interactive Marker developed by [Sammy Pfeiffer](http://github.com/awesomebytes) at PAL Robotics.
 
 Status:
@@ -98,8 +106,3 @@ If you want to get the Eigen or ROS message formatted pose from the interactive 
 
     src/demo_tf_listener.cpp1;2802;0c
     
-## FOR ROS KINETIC
-
-  Recommended package tf_visual_tools
-  
-  https://github.com/mcevoyandy/tf_visual_tools
