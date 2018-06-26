@@ -1,3 +1,7 @@
+## DEPRECATED
+
+  **This package is deprecated.** [tf_visual_tools](https://github.com/PickNikRobotics/tf_visual_tools) is being developed as a replacment.
+
 # Manual TF Calibration Tools
 
 Move /tf frames around using your keyboard or interactive markers - a simple calibration-by-eye tool!
@@ -97,9 +101,3 @@ Which hopefully makes your life easier :-)
 If you want to get the Eigen or ROS message formatted pose from the interactive marker or keyboard calibration, see the template code:
 
     src/demo_tf_listener.cpp1;2802;0c
-    
-## FOR ROS KINETIC
-
-  Recommended package tf_visual_tools
-  
-  https://github.com/mcevoyandy/tf_visual_tools
