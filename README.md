@@ -2,7 +2,7 @@
 
 Move /tf frames around using your keyboard or interactive markers - a simple calibration-by-eye tool!
 
-## For user with ROS KINETIC..
+## For users with ROS KINETIC..
 
   .. please refer to the package tf_visual_tools (source code link below)
   
