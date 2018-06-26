@@ -4,7 +4,7 @@ Move /tf frames around using your keyboard or interactive markers - a simple cal
 
 ## For users with ROS KINETIC..
 
-  .. please refer to the package tf_visual_tools (source code link below)
+  .. please refer to the package **tf_visual_tools** (source code link below)
   
   https://github.com/mcevoyandy/tf_visual_tools
 
