@@ -6,9 +6,11 @@
 
 Move /tf frames around using your keyboard or interactive markers - a simple calibration-by-eye tool!
 
-TF Keyboard Calibration developed by Andy McEvoy and [Dave Coleman](http://dav.ee/) at the University of Colorado Boulder, TF Interactive Marker developed by [Sammy Pfeiffer](http://github.com/awesomebytes) at PAL Robotics.
+<img src="https://picknik.ai/assets/images/logo.jpg" width="120">
 
-Status:
+This open source project was developed at [PickNik Robotics](https://picknik.ai/). Need professional ROS development and consulting? Contact us at projects@picknik.ai for a free consultation.
+
+## Status:
 
  * [![Build Status](https://travis-ci.org/davetcoleman/tf_keyboard_cal.svg)](https://travis-ci.org/davetcoleman/tf_keyboard_cal) Travis CI
  * [![Devel Job Status](http://jenkins.ros.org/buildStatus/icon?job=devel-indigo-tf_keyboard_cal)](http://jenkins.ros.org/job/devel-indigo-tf_keyboard_cal) Devel Job Status
