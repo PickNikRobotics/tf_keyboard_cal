@@ -7,7 +7,7 @@
   <maintainer email="davetcoleman@gmail.com">Dave Coleman</maintainer>
   <maintainer email="mcevoy.andy@gmail.com">Andy McEvoy</maintainer>
 
-  <license>BSD</license>
+  <license>BSD-3-Clause</license>
 
   <url type="website">https://github.com/davetcoleman/tf_keyboard_cal</url>
   <url type="butracker">https://github.com/davetcoleman/tf_keyboard_cal/issues</url>
