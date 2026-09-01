@@ -74,6 +74,7 @@ target_link_libraries(${PROJECT_NAME}
   ${PROJECT_NAME}_manual_tf_alignment
   ${catkin_LIBRARIES}
 )
+add_dependencies(${PROJECT_NAME}_manual_tf_alignment keyboard_generate_messages_cpp)
 
 # Executable
 add_executable(${PROJECT_NAME}_demo_tf_listener
